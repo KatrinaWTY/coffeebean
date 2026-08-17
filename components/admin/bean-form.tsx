@@ -18,7 +18,7 @@ import {
   CheckCircle2,
   HelpCircle,
 } from "lucide-react"
-import { saveBeanAction } from "@/app/admin/actions"
+import { saveBeanAction, getRetailersAction, saveRetailerAction } from "@/app/admin/actions"
 import {
   Bean,
   BeanFormData,
@@ -30,8 +30,11 @@ import {
   ALL_ROASTS,
   ALL_PROCESS_METHODS,
   FormState,
+  Retailer,
+  AffiliateNetwork,
 } from "@/lib/types"
 import { cn } from "@/lib/utils"
+import { useEffect } from "react"
 
 interface BeanFormProps {
   initialBean?: Bean | null
@@ -58,6 +61,48 @@ export function BeanForm({ initialBean, mode }: BeanFormProps) {
   const [imageUrl, setImageUrl] = useState(initialBean?.image || "")
   const [productUrl, setProductUrl] = useState(initialBean?.url || "")
   const [blurb, setBlurb] = useState(initialBean?.blurb || "")
+
+  // Affiliate tracking fields
+  const [retailerId, setRetailerId] = useState(initialBean?.retailerId || "")
+  const [affiliateUrl, setAffiliateUrl] = useState(initialBean?.affiliateUrl || "")
+  const [affiliateNetwork, setAffiliateNetwork] = useState(initialBean?.affiliateNetwork || "")
+  const [merchantId, setMerchantId] = useState(initialBean?.merchantId || "")
+
+  const [retailersList, setRetailersList] = useState<Retailer[]>([])
+  const [networksList, setNetworksList] = useState<AffiliateNetwork[]>([])
+  const [showNewRetailerInput, setShowNewRetailerInput] = useState(false)
+  const [newRetailerName, setNewRetailerName] = useState("")
+  const [isCreatingRetailer, setIsCreatingRetailer] = useState(false)
+
+  useEffect(() => {
+    getRetailersAction()
+      .then((res) => setRetailersList(res))
+      .catch((err) => console.error("Failed to load retailers:", err))
+
+    setNetworksList([
+      { id: "awin", name: "Awin" },
+      { id: "shareasale", name: "ShareASale" },
+      { id: "impact", name: "Impact" },
+      { id: "custom", name: "Custom Direct / Coupon" },
+    ])
+  }, [])
+
+  const handleCreateRetailer = async () => {
+    const trimmed = newRetailerName.trim()
+    if (!trimmed) return
+    setIsCreatingRetailer(true)
+    try {
+      const newRet = await saveRetailerAction(trimmed)
+      setRetailersList((prev) => [...prev, newRet].sort((a, b) => a.name.localeCompare(b.name)))
+      setRetailerId(newRet.id)
+      setNewRetailerName("")
+      setShowNewRetailerInput(false)
+    } catch (err) {
+      console.error("Failed to create retailer:", err)
+    } finally {
+      setIsCreatingRetailer(false)
+    }
+  }
   
   // Sensory & Rating
   const [acidity, setAcidity] = useState(initialBean?.acidity || 3)
@@ -135,6 +180,10 @@ export function BeanForm({ initialBean, mode }: BeanFormProps) {
       errors.productUrl = "Product URL must start with http:// or https://"
     }
 
+    if (affiliateUrl.trim() && !affiliateUrl.startsWith("http://") && !affiliateUrl.startsWith("https://")) {
+      errors.affiliateUrl = "Affiliate URL must start with http:// or https://"
+    }
+
     setClientErrors(errors)
     return Object.keys(errors).length === 0
   }
@@ -178,6 +227,10 @@ export function BeanForm({ initialBean, mode }: BeanFormProps) {
     formData.set("featured", featured ? "true" : "false")
     formData.set("flavors", JSON.stringify(flavors))
     formData.set("purposes", JSON.stringify(purposes))
+    formData.set("retailerId", retailerId)
+    formData.set("affiliateUrl", affiliateUrl)
+    formData.set("affiliateNetwork", affiliateNetwork)
+    formData.set("merchantId", merchantId)
 
     startTransition(async () => {
       const result = await saveBeanAction(null, formData)
@@ -796,6 +849,118 @@ export function BeanForm({ initialBean, mode }: BeanFormProps) {
               {clientErrors.productUrl && (
                 <p className="text-[11px] font-bold text-destructive mt-1">{clientErrors.productUrl}</p>
               )}
+            </div>
+          </div>
+
+          {/* Card 3.5: Affiliate & Referral Configuration */}
+          <div className="rounded-3xl border border-border bg-card p-6 shadow-xs space-y-4">
+            <h3 className="font-heading text-lg font-bold text-foreground border-b border-border pb-3 flex items-center gap-2">
+              <Sparkles className="size-4 text-primary" />
+              Affiliate Tracking
+            </h3>
+
+            {/* Retailer Select */}
+            <div>
+              <label className="block text-xs font-bold text-foreground/80 tracking-wide mb-1.5 flex justify-between items-center">
+                <span>Associated Retailer / Store</span>
+                <button
+                  type="button"
+                  onClick={() => setShowNewRetailerInput(!showNewRetailerInput)}
+                  className="text-[10px] text-primary hover:underline font-bold"
+                >
+                  {showNewRetailerInput ? "Cancel" : "+ Add New Retailer"}
+                </button>
+              </label>
+
+              {showNewRetailerInput ? (
+                <div className="flex gap-2 animate-in fade-in-50 duration-150">
+                  <input
+                    type="text"
+                    value={newRetailerName}
+                    onChange={(e) => setNewRetailerName(e.target.value)}
+                    placeholder="New Retailer Name"
+                    className="flex-1 rounded-2xl border border-transparent bg-[#F5F2F0] px-4 py-2 text-xs font-semibold text-foreground outline-none focus:bg-white focus:border-primary"
+                  />
+                  <button
+                    type="button"
+                    onClick={handleCreateRetailer}
+                    disabled={isCreatingRetailer || !newRetailerName.trim()}
+                    className="rounded-2xl bg-primary text-primary-foreground px-4 py-2 text-xs font-bold hover:bg-primary/90 disabled:opacity-50"
+                  >
+                    {isCreatingRetailer ? "Adding..." : "Add"}
+                  </button>
+                </div>
+              ) : (
+                <select
+                  value={retailerId}
+                  onChange={(e) => setRetailerId(e.target.value)}
+                  className="w-full rounded-2xl border border-transparent bg-[#F5F2F0] px-4 py-3 text-xs font-semibold text-foreground outline-none focus:bg-white focus:border-primary cursor-pointer"
+                >
+                  <option value="">-- Select Retailer --</option>
+                  {retailersList.map((ret) => (
+                    <option key={ret.id} value={ret.id}>
+                      {ret.name}
+                    </option>
+                  ))}
+                </select>
+              )}
+            </div>
+
+            {/* Affiliate URL */}
+            <div>
+              <label className="block text-xs font-bold text-foreground/80 tracking-wide mb-1.5">
+                Affiliate Redirect URL
+              </label>
+              <input
+                type="text"
+                value={affiliateUrl}
+                onChange={(e) => {
+                  setAffiliateUrl(e.target.value)
+                  if (clientErrors.affiliateUrl) setClientErrors({ ...clientErrors, affiliateUrl: "" })
+                }}
+                placeholder="https://network.awin.com/click?merchant=..."
+                className={cn(
+                  "w-full rounded-2xl border bg-[#F5F2F0] px-4 py-3 text-xs font-semibold text-foreground outline-none transition-all placeholder:text-muted-foreground/60 focus:bg-white focus:border-primary",
+                  clientErrors.affiliateUrl ? "border-destructive bg-destructive/5" : "border-transparent"
+                )}
+              />
+              {clientErrors.affiliateUrl && (
+                <p className="text-[11px] font-bold text-destructive mt-1">{clientErrors.affiliateUrl}</p>
+              )}
+            </div>
+
+            {/* Affiliate Network & Merchant ID */}
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label className="block text-xs font-bold text-foreground/80 tracking-wide mb-1.5">
+                  Affiliate Network
+                </label>
+                <select
+                  value={affiliateNetwork}
+                  onChange={(e) => setAffiliateNetwork(e.target.value)}
+                  className="w-full rounded-2xl border border-transparent bg-[#F5F2F0] px-4 py-3 text-xs font-semibold text-foreground outline-none focus:bg-white focus:border-primary cursor-pointer"
+                >
+                  <option value="">-- Select Network --</option>
+                  {networksList.map((net) => (
+                    <option key={net.id} value={net.id}>
+                      {net.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold text-foreground/80 tracking-wide mb-1.5">
+                  Merchant ID
+                </label>
+                <input
+                  type="text"
+                  value={merchantId}
+                  onChange={(e) => setMerchantId(e.target.value)}
+                  placeholder="e.g. 12456"
+                  className="w-full rounded-2xl border border-transparent bg-[#F5F2F0] px-4 py-3 text-xs font-semibold text-foreground outline-none focus:bg-white focus:border-primary"
+                />
+              </div>
             </div>
           </div>
 

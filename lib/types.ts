@@ -41,10 +41,68 @@ export interface Bean {
   featured: boolean
   createdAt: string
   updatedAt: string
+
+  // Affiliate & Retailer extensions
+  retailerId: string
+  affiliateUrl?: string
+  affiliateNetwork?: string
+  merchantId?: string
 }
 
 export type BeanFormData = Omit<Bean, "id" | "createdAt" | "updatedAt"> & {
   id?: string
+}
+
+export interface Retailer {
+  id: string
+  name: string
+  url?: string
+  createdAt: string
+  updatedAt: string
+}
+
+export interface AffiliateNetwork {
+  id: string
+  name: string
+}
+
+export interface AffiliateClick {
+  id: string
+  coffeeBeanId: string
+  retailerId: string
+  affiliateNetwork: string
+  timestamp: string
+  referrer?: string
+  path?: string
+  searchQuery?: string
+  filters?: {
+    regions?: string[]
+    flavors?: string[]
+    purposes?: string[]
+  }
+  ctaLocation?: string
+  sessionId: string
+  utmSource?: string
+  utmMedium?: string
+  utmCampaign?: string
+  deviceCategory?: "desktop" | "mobile" | "tablet" | "unknown"
+}
+
+export interface AffiliateConversion {
+  id: string
+  affiliateNetwork: string
+  retailerId: string
+  externalTransactionId: string
+  orderDate: string
+  conversionDate: string
+  orderValue: number
+  commissionValue: number
+  currency: string
+  status: "Pending" | "Approved" | "Rejected" | "Paid"
+  coffeeBeanId?: string
+  clickId?: string
+  rawExternalReferenceId?: string
+  createdAt: string
 }
 
 export interface FormState {
@@ -53,6 +111,7 @@ export interface FormState {
   errors?: Record<string, string[]>
   beanId?: string
 }
+
 
 export interface AdminStats {
   totalBeans: number

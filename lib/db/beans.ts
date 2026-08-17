@@ -138,6 +138,10 @@ export async function createBean(data: BeanFormData): Promise<Bean> {
     featured: typeof data.featured === "boolean" ? data.featured : false,
     createdAt: now,
     updatedAt: now,
+    retailerId: data.retailerId?.trim() || "",
+    affiliateUrl: data.affiliateUrl?.trim() || "",
+    affiliateNetwork: data.affiliateNetwork?.trim() || "",
+    merchantId: data.merchantId?.trim() || "",
   }
 
   // Prepend new bean to the top
@@ -180,6 +184,10 @@ export async function updateBean(id: string, data: Partial<BeanFormData>): Promi
     url: data.url !== undefined ? data.url.trim() : existing.url,
     inStock: data.inStock !== undefined ? data.inStock : existing.inStock,
     featured: data.featured !== undefined ? data.featured : existing.featured,
+    retailerId: data.retailerId !== undefined ? data.retailerId.trim() : (existing.retailerId || ""),
+    affiliateUrl: data.affiliateUrl !== undefined ? data.affiliateUrl.trim() : (existing.affiliateUrl || ""),
+    affiliateNetwork: data.affiliateNetwork !== undefined ? data.affiliateNetwork.trim() : (existing.affiliateNetwork || ""),
+    merchantId: data.merchantId !== undefined ? data.merchantId.trim() : (existing.merchantId || ""),
     updatedAt: now,
   }
 

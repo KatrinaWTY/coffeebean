@@ -20,16 +20,24 @@ import {
   X,
   Check,
 } from "lucide-react"
-import { Bean, Roast, ALL_ROASTS } from "@/lib/types"
+import { Bean, Roast, ALL_ROASTS, Retailer } from "@/lib/types"
 import { deleteBeanAction, toggleStockAction } from "@/app/admin/actions"
 import { DeleteDialog } from "@/components/admin/delete-dialog"
 import { cn } from "@/lib/utils"
 
 interface BeanTableProps {
   initialBeans: Bean[]
+  clickCounts?: Record<string, number>
+  commissions?: Record<string, number>
+  retailers?: Retailer[]
 }
 
-export function BeanTable({ initialBeans }: BeanTableProps) {
+export function BeanTable({
+  initialBeans,
+  clickCounts = {},
+  commissions = {},
+  retailers = [],
+}: BeanTableProps) {
   const router = useRouter()
   const [beans, setBeans] = useState<Bean[]>(initialBeans)
   const [searchQuery, setSearchQuery] = useState("")
@@ -315,10 +323,13 @@ export function BeanTable({ initialBeans }: BeanTableProps) {
               <tr className="border-b border-border bg-secondary/40 text-[11px] font-extrabold uppercase tracking-wider text-muted-foreground">
                 <th className="py-4 pl-6 pr-3">Bean</th>
                 <th className="py-4 px-3">Roaster</th>
-                <th className="py-4 px-3">Origin & Process</th>
-                <th className="py-4 px-3">Roast & Flavours</th>
+                <th className="py-4 px-3">Retailer</th>
+                <th className="py-4 px-3">Origin</th>
                 <th className="py-4 px-3">Price</th>
-                <th className="py-4 px-3">In Stock</th>
+                <th className="py-4 px-3">Availability</th>
+                <th className="py-4 px-3">Affiliate Status</th>
+                <th className="py-4 px-3">Clicks</th>
+                <th className="py-4 px-3">Commission</th>
                 <th className="py-4 pl-3 pr-6 text-right">Actions</th>
               </tr>
             </thead>
@@ -369,50 +380,20 @@ export function BeanTable({ initialBeans }: BeanTableProps) {
                     </span>
                   </td>
 
-                  {/* Origin & Process */}
+                  {/* Retailer */}
+                  <td className="py-4 px-3 font-semibold text-foreground">
+                    {retailers.find((r) => r.id === bean.retailerId)?.name || bean.roaster || "—"}
+                  </td>
+
+                  {/* Origin */}
                   <td className="py-4 px-3">
                     <div>
                       <span className="font-semibold text-foreground block">
                         {bean.country}
                       </span>
                       <span className="text-[11px] text-muted-foreground block truncate max-w-[140px]">
-                        {bean.region || bean.process || "Washed"}
+                        {bean.region || "—"}
                       </span>
-                    </div>
-                  </td>
-
-                  {/* Roast & Flavor Notes */}
-                  <td className="py-4 px-3">
-                    <div className="space-y-1.5 max-w-[200px]">
-                      <span
-                        className={cn(
-                          "inline-block rounded-full px-2 py-0.5 text-[10px] font-extrabold uppercase tracking-wide",
-                          bean.roast === "Light"
-                            ? "bg-amber-100 text-amber-800"
-                            : bean.roast === "Medium"
-                            ? "bg-orange-100 text-orange-800"
-                            : bean.roast === "Medium-Dark"
-                            ? "bg-stone-200 text-stone-800"
-                            : "bg-stone-800 text-stone-100"
-                        )}
-                      >
-                        {bean.roast}
-                      </span>
-                      <div className="flex flex-wrap gap-1">
-                        {bean.flavors?.slice(0, 3).map((f) => (
-                          <span
-                            key={f}
-                            className="rounded-md bg-secondary/80 px-1.5 py-0.5 text-[10px] font-semibold text-secondary-foreground"
-                          >
-                            {f}
-                          </span>
-                        ))}
-                        {bean.flavors && bean.flavors.length > 3 && (
-                          <span className="text-[10px] text-muted-foreground font-bold">
-                            +{bean.flavors.length - 3}
-                          </span>
-                        )}
-                      </div>
                     </div>
                   </td>
 
@@ -444,6 +425,29 @@ export function BeanTable({ initialBeans }: BeanTableProps) {
                       />
                       <span>{bean.inStock ? "In Stock" : "Out of Stock"}</span>
                     </button>
+                  </td>
+
+                  {/* Affiliate Status */}
+                  <td className="py-4 px-3">
+                    {bean.affiliateUrl ? (
+                      <span className="inline-flex items-center gap-1 rounded bg-emerald-100 px-2 py-0.5 text-[10px] font-extrabold uppercase text-emerald-800">
+                        Active ({bean.affiliateNetwork || "direct"})
+                      </span>
+                    ) : (
+                      <span className="inline-flex items-center gap-1 rounded bg-stone-100 px-2 py-0.5 text-[10px] font-bold text-muted-foreground">
+                        None
+                      </span>
+                    )}
+                  </td>
+
+                  {/* Affiliate Clicks */}
+                  <td className="py-4 px-3 font-heading font-extrabold text-sm text-foreground">
+                    {clickCounts[bean.id] || 0}
+                  </td>
+
+                  {/* Commission */}
+                  <td className="py-4 px-3 font-heading font-extrabold text-sm text-foreground">
+                    £{(commissions[bean.id] || 0).toFixed(2)}
                   </td>
 
                   {/* Actions */}
@@ -559,6 +563,22 @@ export function BeanTable({ initialBeans }: BeanTableProps) {
                 ))}
               </div>
             )}
+
+            {/* Affiliate Performance Details */}
+            <div className="grid grid-cols-2 gap-2 border-t border-border/40 pt-2.5 text-[11px] font-semibold text-muted-foreground">
+              <div>
+                Retailer: <span className="text-foreground">{retailers.find((r) => r.id === bean.retailerId)?.name || bean.roaster || "—"}</span>
+              </div>
+              <div>
+                Affiliate: <span className="text-foreground">{bean.affiliateUrl ? `${bean.affiliateNetwork || "direct"}` : "None"}</span>
+              </div>
+              <div>
+                Clicks: <span className="text-foreground font-bold">{clickCounts[bean.id] || 0}</span>
+              </div>
+              <div>
+                Commission: <span className="text-foreground font-bold">£{(commissions[bean.id] || 0).toFixed(2)}</span>
+              </div>
+            </div>
 
             {/* Actions Bar */}
             <div className="flex items-center justify-between border-t border-border/60 pt-3">

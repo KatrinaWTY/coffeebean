@@ -1,6 +1,7 @@
 "use client"
 
-import { useMemo, useState } from "react"
+import { useMemo, useState, useEffect } from "react"
+import { getLiveBeansAction } from "@/app/admin/actions"
 import { usePathname } from "next/navigation"
 import Image from "next/image"
 import Link from "next/link"
@@ -220,7 +221,7 @@ export function SiteFooter() {
 // Hero & How It Works Components
 // ==========================================
 
-export function Hero() {
+export function Hero({ beans }: { beans: Bean[] }) {
   return (
     <section className="mx-auto w-full max-w-6xl px-5 pb-4 pt-12 sm:pt-16">
       <div className="grid grid-cols-1 items-center gap-10 lg:grid-cols-2">
@@ -365,8 +366,15 @@ export function HowItWorks() {
 // Bean Card & Filter Components
 // ==========================================
 
-
-export function BeanCard({ bean }: { bean: Bean }) {
+export function BeanCard({
+  bean,
+  query = "",
+  filters = { regions: [], flavors: [], purposes: [] },
+}: {
+  bean: Bean
+  query?: string
+  filters?: Filters
+}) {
   const { brand, name: cleanedName } = useMemo(() => {
     if (bean.roaster) {
       let name = bean.name
@@ -401,6 +409,16 @@ export function BeanCard({ bean }: { bean: Bean }) {
       : bean.country
     return loc.toUpperCase()
   }, [bean.region, bean.country])
+
+  const trackingUrl = useMemo(() => {
+    if (typeof window === "undefined") return `/go/${bean.id}`
+    const params = new URLSearchParams()
+    params.set("path", window.location.pathname)
+    if (query) params.set("q", query)
+    if (filters) params.set("filters", JSON.stringify(filters))
+    params.set("cta", "card")
+    return `/go/${bean.id}?${params.toString()}`
+  }, [bean.id, query, filters])
 
   return (
     <article className="group flex flex-col overflow-hidden rounded-3xl border border-[#EADFD7] bg-white transition-all hover:-translate-y-1 hover:shadow-[0_18px_40px_-22px_rgba(120,80,40,0.45)]">
@@ -462,7 +480,7 @@ export function BeanCard({ bean }: { bean: Bean }) {
           </div>
           {bean.url ? (
             <a
-              href={bean.url}
+              href={trackingUrl}
               target="_blank"
               rel="noopener noreferrer"
               className="rounded-full bg-secondary px-3 py-1.5 text-xs font-semibold text-foreground hover:bg-primary hover:text-primary-foreground transition-colors"
@@ -486,10 +504,12 @@ export function BeanFilters({
   filters,
   setFilters,
   total,
+  regions,
 }: {
   filters: Filters
   setFilters: (f: Filters) => void
   total: number
+  regions: string[]
 }) {
   const [isRegionCollapsed, setIsRegionCollapsed] = useState(false)
 
@@ -573,7 +593,7 @@ export function BeanFilters({
           )}
         >
           <div className="flex flex-col gap-2 max-h-52 overflow-y-auto pr-1">
-            {REGIONS.map((region) => {
+            {regions.map((region) => {
               const active = filters.regions.includes(region)
               return (
                 <label
@@ -800,9 +820,11 @@ export function BeanFilters({
 export function BeanExplorer({
   query,
   setQuery,
+  beans,
 }: {
   query: string
   setQuery: (q: string) => void
+  beans: Bean[]
 }) {
   const [showFilters, setShowFilters] = useState(false)
   const [filters, setFilters] = useState<Filters>({
@@ -810,6 +832,10 @@ export function BeanExplorer({
     flavors: [],
     purposes: [],
   })
+
+  const regions = useMemo(() => {
+    return Array.from(new Set(beans.map((b) => b.country))).sort()
+  }, [beans])
 
   const results = useMemo(() => {
     const q = query.trim().toLowerCase()
@@ -849,7 +875,7 @@ export function BeanExplorer({
       }
       return true
     })
-  }, [query, filters])
+  }, [query, filters, beans])
 
   return (
     <section id="explore" className="mx-auto w-full max-w-6xl px-5 py-16">
@@ -890,6 +916,7 @@ export function BeanExplorer({
               filters={filters}
               setFilters={setFilters}
               total={results.length}
+              regions={regions}
             />
           </div>
         </div>
@@ -898,7 +925,7 @@ export function BeanExplorer({
           {results.length > 0 ? (
             <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 xl:grid-cols-3">
               {results.map((bean) => (
-                <BeanCard key={bean.id} bean={bean} />
+                <BeanCard key={bean.id} bean={bean} query={query} filters={filters} />
               ))}
             </div>
           ) : (
@@ -923,13 +950,43 @@ export function BeanExplorer({
 
 export default function Page() {
   const [query, setQuery] = useState("")
+  const [liveBeans, setLiveBeans] = useState<Bean[]>(initialBeans as Bean[])
+
+  // 1. Fetch live beans on mount
+  useEffect(() => {
+    getLiveBeansAction()
+      .then((res) => {
+        if (res && res.length > 0) {
+          setLiveBeans(res)
+        }
+      })
+      .catch((err) => console.error("Failed to load live beans:", err))
+  }, [])
+
+  // 2. Capture and store incoming UTM attributes in cookies
+  useEffect(() => {
+    if (typeof window === "undefined") return
+
+    const searchParams = new URLSearchParams(window.location.search)
+    const utmSource = searchParams.get("utm_source")
+    const utmMedium = searchParams.get("utm_medium")
+    const utmCampaign = searchParams.get("utm_campaign")
+
+    const setCookie = (name: string, value: string) => {
+      document.cookie = `${name}=${encodeURIComponent(value)}; path=/; max-age=${60 * 60 * 24 * 30}; SameSite=Lax`
+    }
+
+    if (utmSource) setCookie("bean_buddy_utm_source", utmSource)
+    if (utmMedium) setCookie("bean_buddy_utm_medium", utmMedium)
+    if (utmCampaign) setCookie("bean_buddy_utm_campaign", utmCampaign)
+  }, [])
 
   return (
     <main className="min-h-screen bg-[#FCF8F5] text-foreground">
       <SiteHeader searchQuery={query} setSearchQuery={setQuery} placeholder="Search beans..." />
-      <Hero />
+      <Hero beans={liveBeans} />
       <HowItWorks />
-      <BeanExplorer query={query} setQuery={setQuery} />
+      <BeanExplorer query={query} setQuery={setQuery} beans={liveBeans} />
       <SiteFooter />
     </main>
   )

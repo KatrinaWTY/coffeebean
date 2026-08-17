@@ -37,6 +37,12 @@ export function AdminHeader() {
       icon: PlusCircle,
       active: pathname === "/admin/coffee-beans/new",
     },
+    {
+      href: "/admin/affiliate",
+      label: "Affiliate Performance",
+      icon: LayoutDashboard,
+      active: pathname === "/admin/affiliate",
+    },
   ]
 
   return (

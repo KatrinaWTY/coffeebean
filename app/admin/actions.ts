@@ -13,7 +13,10 @@ import {
   updateBean,
   deleteBean,
   toggleBeanStock,
+  getBeans,
 } from "@/lib/db/beans"
+import { getRetailers, createRetailer } from "@/lib/db/retailers"
+import { recordConversion, importConversionsFromCsv } from "@/lib/db/conversions"
 import {
   BeanFormData,
   FormState,
@@ -114,6 +117,12 @@ export async function saveBeanAction(
   const inStock = formData.get("inStock") === "true" || formData.get("inStock") === "on"
   const featured = formData.get("featured") === "true" || formData.get("featured") === "on"
 
+  // New affiliate tracker inputs
+  const retailerId = formData.get("retailerId")?.toString()?.trim() || ""
+  const affiliateUrl = formData.get("affiliateUrl")?.toString()?.trim() || ""
+  const affiliateNetwork = formData.get("affiliateNetwork")?.toString()?.trim() || ""
+  const merchantId = formData.get("merchantId")?.toString()?.trim() || ""
+
   // Server-side validation
   const errors: Record<string, string[]> = {}
 
@@ -139,6 +148,10 @@ export async function saveBeanAction(
 
   if (url && !isValidUrl(url)) {
     errors.url = ["Product URL must be a valid http(s) URL"]
+  }
+
+  if (affiliateUrl && !isValidUrl(affiliateUrl)) {
+    errors.affiliateUrl = ["Affiliate URL must be a valid http(s) URL"]
   }
 
   if (Object.keys(errors).length > 0) {
@@ -198,6 +211,10 @@ export async function saveBeanAction(
     url,
     inStock,
     featured,
+    retailerId,
+    affiliateUrl,
+    affiliateNetwork,
+    merchantId,
   }
 
   try {
@@ -312,3 +329,95 @@ export async function toggleStockAction(id: string): Promise<FormState> {
     }
   }
 }
+
+/**
+ * Fetch retailers for forms
+ */
+export async function getRetailersAction() {
+  return await getRetailers()
+}
+
+/**
+ * Create a new retailer
+ */
+export async function saveRetailerAction(name: string, url?: string) {
+  const isAuth = await isAdminAuthenticated()
+  if (!isAuth) throw new Error("Unauthorized")
+  return await createRetailer({ name, url })
+}
+
+/**
+ * Fetch live beans (bypass server-side static/caching on root page)
+ */
+export async function getLiveBeansAction() {
+  return await getBeans()
+}
+
+/**
+ * Save manual conversion record
+ */
+export async function saveConversionAction(
+  _prevState: FormState | null,
+  formData: FormData
+): Promise<FormState> {
+  const isAuth = await isAdminAuthenticated()
+  if (!isAuth) return { success: false, message: "Unauthorized" }
+
+  const network = formData.get("affiliateNetwork")?.toString()?.trim() || ""
+  const retailerId = formData.get("retailerId")?.toString()?.trim() || ""
+  const externalTransactionId = formData.get("externalTransactionId")?.toString()?.trim() || ""
+  const orderValue = parseFloat(formData.get("orderValue")?.toString() || "0")
+  const commissionValue = parseFloat(formData.get("commissionValue")?.toString() || "0")
+  const currency = formData.get("currency")?.toString()?.trim() || "GBP"
+  const status = (formData.get("status")?.toString() || "Pending") as any
+  const coffeeBeanId = formData.get("coffeeBeanId")?.toString()?.trim() || undefined
+  const orderDate = formData.get("orderDate")?.toString() || new Date().toISOString()
+  const conversionDate = formData.get("conversionDate")?.toString() || new Date().toISOString()
+
+  if (!network || !retailerId || !externalTransactionId) {
+    return {
+      success: false,
+      message: "Network, Retailer and External Transaction ID are required.",
+    }
+  }
+
+  try {
+    await recordConversion({
+      affiliateNetwork: network,
+      retailerId,
+      externalTransactionId,
+      orderDate,
+      conversionDate,
+      orderValue,
+      commissionValue,
+      currency,
+      status,
+      coffeeBeanId,
+    })
+    revalidatePath("/admin/affiliate")
+    return { success: true, message: "Conversion recorded successfully!" }
+  } catch (err: any) {
+    return { success: false, message: err.message || "Failed to record conversion." }
+  }
+}
+
+/**
+ * Import Conversions CSV Action
+ */
+export async function importConversionsCsvAction(csvText: string): Promise<{ success: boolean; message: string; errors?: string[] }> {
+  const isAuth = await isAdminAuthenticated()
+  if (!isAuth) throw new Error("Unauthorized")
+
+  try {
+    const result = await importConversionsFromCsv(csvText)
+    revalidatePath("/admin/affiliate")
+    return {
+      success: true,
+      message: `Successfully imported ${result.importedCount} conversion records.`,
+      errors: result.errors,
+    }
+  } catch (err: any) {
+    return { success: false, message: err.message || "CSV import failed." }
+  }
+}
+

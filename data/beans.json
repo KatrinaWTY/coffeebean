@@ -7,12 +7,20 @@
     "country": "Brazil",
     "image": "https://climpsonandsons.com/cdn/shop/files/thebaron2026-01.jpg?v=1777636956&width=1500",
     "roast": "Medium",
-    "flavors": ["Chocolate", "Nutty"],
-    "purposes": ["Espresso", "Pour Over", "Drip", "French Press"],
+    "flavors": [
+      "Chocolate",
+      "Nutty"
+    ],
+    "purposes": [
+      "Espresso",
+      "Pour Over",
+      "Drip",
+      "French Press"
+    ],
     "acidity": 3,
     "body": 3,
     "sweetness": 4,
-    "price": 15.0,
+    "price": 15,
     "currency": "GBP",
     "weight": "250g",
     "variety": "Mundo Novo",
@@ -23,7 +31,11 @@
     "inStock": true,
     "featured": true,
     "createdAt": "2025-01-10T08:00:00.000Z",
-    "updatedAt": "2025-01-10T08:00:00.000Z"
+    "updatedAt": "2025-01-10T08:00:00.000Z",
+    "retailerId": "climpson-sons",
+    "affiliateUrl": "",
+    "affiliateNetwork": "",
+    "merchantId": ""
   },
   {
     "id": "climpson-sons-the-estate-fero-ethiopia",
@@ -33,12 +45,21 @@
     "country": "Ethiopia",
     "image": "https://climpsonandsons.com/cdn/shop/files/2025_Webshop_Coffee_Thumbnail_-08.jpg?v=1748613393&width=1500",
     "roast": "Medium",
-    "flavors": ["Chocolate", "Citrus", "Caramel"],
-    "purposes": ["Espresso", "Pour Over", "Drip", "French Press"],
+    "flavors": [
+      "Chocolate",
+      "Citrus",
+      "Caramel"
+    ],
+    "purposes": [
+      "Espresso",
+      "Pour Over",
+      "Drip",
+      "French Press"
+    ],
     "acidity": 3,
     "body": 3,
     "sweetness": 4,
-    "price": 15.0,
+    "price": 15,
     "currency": "GBP",
     "weight": "250g",
     "variety": "Heirloom",
@@ -49,7 +70,11 @@
     "inStock": true,
     "featured": true,
     "createdAt": "2025-01-10T08:30:00.000Z",
-    "updatedAt": "2025-01-10T08:30:00.000Z"
+    "updatedAt": "2025-01-10T08:30:00.000Z",
+    "retailerId": "climpson-sons",
+    "affiliateUrl": "",
+    "affiliateNetwork": "",
+    "merchantId": ""
   },
   {
     "id": "climpson-sons-broadway-blend-brazil-peru",
@@ -59,12 +84,20 @@
     "country": "Brazil",
     "image": "https://climpsonandsons.com/cdn/shop/files/websitemockupSINGLEBAGSbbcopy-01.jpg?v=1778233579&width=1500",
     "roast": "Medium",
-    "flavors": ["Nutty", "Caramel"],
-    "purposes": ["Espresso", "Pour Over", "Drip", "French Press"],
+    "flavors": [
+      "Nutty",
+      "Caramel"
+    ],
+    "purposes": [
+      "Espresso",
+      "Pour Over",
+      "Drip",
+      "French Press"
+    ],
     "acidity": 3,
     "body": 3,
     "sweetness": 4,
-    "price": 15.0,
+    "price": 15,
     "currency": "GBP",
     "weight": "250g",
     "variety": "Catuai & Bourbon",
@@ -75,7 +108,11 @@
     "inStock": true,
     "featured": false,
     "createdAt": "2025-01-10T09:00:00.000Z",
-    "updatedAt": "2025-01-10T09:00:00.000Z"
+    "updatedAt": "2025-01-10T09:00:00.000Z",
+    "retailerId": "climpson-sons",
+    "affiliateUrl": "",
+    "affiliateNetwork": "",
+    "merchantId": ""
   },
   {
     "id": "climpson-sons-the-fields-migoti-burundi",
@@ -85,12 +122,21 @@
     "country": "Burundi",
     "image": "https://climpsonandsons.com/cdn/shop/files/TheFieldsBurundi2026tastenotes-01.jpg?v=1776856569&width=1500",
     "roast": "Medium",
-    "flavors": ["Caramel", "Citrus", "Berry"],
-    "purposes": ["Espresso", "Pour Over", "Drip", "French Press"],
+    "flavors": [
+      "Caramel",
+      "Citrus",
+      "Berry"
+    ],
+    "purposes": [
+      "Espresso",
+      "Pour Over",
+      "Drip",
+      "French Press"
+    ],
     "acidity": 3,
     "body": 3,
     "sweetness": 4,
-    "price": 15.0,
+    "price": 15,
     "currency": "GBP",
     "weight": "250g",
     "variety": "Red Bourbon",
@@ -101,7 +147,11 @@
     "inStock": true,
     "featured": false,
     "createdAt": "2025-01-10T09:30:00.000Z",
-    "updatedAt": "2025-01-10T09:30:00.000Z"
+    "updatedAt": "2025-01-10T09:30:00.000Z",
+    "retailerId": "climpson-sons",
+    "affiliateUrl": "",
+    "affiliateNetwork": "",
+    "merchantId": ""
   },
   {
     "id": "climpson-sons-decaf-la-plata-colombia",
@@ -111,12 +161,21 @@
     "country": "Colombia",
     "image": "https://climpsonandsons.com/cdn/shop/files/Coffee_Thumbnail_Front-05.jpg?v=1746194126&width=1500",
     "roast": "Medium",
-    "flavors": ["Chocolate", "Citrus", "Caramel"],
-    "purposes": ["Espresso", "Pour Over", "Drip", "French Press"],
+    "flavors": [
+      "Chocolate",
+      "Citrus",
+      "Caramel"
+    ],
+    "purposes": [
+      "Espresso",
+      "Pour Over",
+      "Drip",
+      "French Press"
+    ],
     "acidity": 3,
     "body": 3,
     "sweetness": 4,
-    "price": 15.0,
+    "price": 15,
     "currency": "GBP",
     "weight": "250g",
     "variety": "Castillo, Caturra",
@@ -127,7 +186,11 @@
     "inStock": true,
     "featured": false,
     "createdAt": "2025-01-10T10:00:00.000Z",
-    "updatedAt": "2025-01-10T10:00:00.000Z"
+    "updatedAt": "2025-01-10T10:00:00.000Z",
+    "retailerId": "climpson-sons",
+    "affiliateUrl": "",
+    "affiliateNetwork": "",
+    "merchantId": ""
   },
   {
     "id": "climpson-sons-khar-taw-hmi-myanmar",
@@ -137,12 +200,21 @@
     "country": "Myanmar",
     "image": "https://climpsonandsons.com/cdn/shop/files/March_26MyanmarWebshopCoffeeThumbnail2_6f79038c-975a-4b54-b022-8ccdf4ca8979.jpg?v=1773230110&width=1500",
     "roast": "Medium",
-    "flavors": ["Caramel", "Citrus", "Berry"],
-    "purposes": ["Espresso", "Pour Over", "Drip", "French Press"],
+    "flavors": [
+      "Caramel",
+      "Citrus",
+      "Berry"
+    ],
+    "purposes": [
+      "Espresso",
+      "Pour Over",
+      "Drip",
+      "French Press"
+    ],
     "acidity": 3,
     "body": 3,
     "sweetness": 4,
-    "price": 15.0,
+    "price": 15,
     "currency": "GBP",
     "weight": "250g",
     "variety": "Catuai",
@@ -153,7 +225,11 @@
     "inStock": true,
     "featured": false,
     "createdAt": "2025-01-10T10:30:00.000Z",
-    "updatedAt": "2025-01-10T10:30:00.000Z"
+    "updatedAt": "2025-01-10T10:30:00.000Z",
+    "retailerId": "climpson-sons",
+    "affiliateUrl": "",
+    "affiliateNetwork": "",
+    "merchantId": ""
   },
   {
     "id": "climpson-sons-musasa-ruli-rwanda",
@@ -163,12 +239,20 @@
     "country": "Rwanda",
     "image": "https://climpsonandsons.com/cdn/shop/files/websitemockupSINGLEBAGSRWANDA_1_copy-01.jpg?v=1777026284&width=1500",
     "roast": "Medium",
-    "flavors": ["Citrus", "Berry"],
-    "purposes": ["Espresso", "Pour Over", "Drip", "French Press"],
+    "flavors": [
+      "Citrus",
+      "Berry"
+    ],
+    "purposes": [
+      "Espresso",
+      "Pour Over",
+      "Drip",
+      "French Press"
+    ],
     "acidity": 3,
     "body": 3,
     "sweetness": 4,
-    "price": 15.0,
+    "price": 15,
     "currency": "GBP",
     "weight": "250g",
     "variety": "Red Bourbon",
@@ -179,7 +263,11 @@
     "inStock": true,
     "featured": true,
     "createdAt": "2025-01-10T11:00:00.000Z",
-    "updatedAt": "2025-01-10T11:00:00.000Z"
+    "updatedAt": "2025-01-10T11:00:00.000Z",
+    "retailerId": "climpson-sons",
+    "affiliateUrl": "",
+    "affiliateNetwork": "",
+    "merchantId": ""
   },
   {
     "id": "climpson-sons-ngila-estate-tanzania",
@@ -189,12 +277,21 @@
     "country": "Tanzania",
     "image": "https://climpsonandsons.com/cdn/shop/files/Tanzania_Karatu_Thumbanail-01.jpg?v=1776336587&width=1500",
     "roast": "Medium",
-    "flavors": ["Stone Fruit", "Honey", "Berry"],
-    "purposes": ["Espresso", "Pour Over", "Drip", "French Press"],
+    "flavors": [
+      "Stone Fruit",
+      "Honey",
+      "Berry"
+    ],
+    "purposes": [
+      "Espresso",
+      "Pour Over",
+      "Drip",
+      "French Press"
+    ],
     "acidity": 3,
     "body": 3,
     "sweetness": 4,
-    "price": 15.0,
+    "price": 15,
     "currency": "GBP",
     "weight": "250g",
     "variety": "SL28",
@@ -205,7 +302,11 @@
     "inStock": true,
     "featured": false,
     "createdAt": "2025-01-10T11:30:00.000Z",
-    "updatedAt": "2025-01-10T11:30:00.000Z"
+    "updatedAt": "2025-01-10T11:30:00.000Z",
+    "retailerId": "climpson-sons",
+    "affiliateUrl": "",
+    "affiliateNetwork": "",
+    "merchantId": ""
   },
   {
     "id": "formative-coffee-choc-nuts",
@@ -215,12 +316,20 @@
     "country": "Brazil",
     "image": "https://formative.coffee/cdn/shop/files/choc-nuts.png?v=1776791603&width=960",
     "roast": "Medium",
-    "flavors": ["Chocolate", "Caramel", "Nutty"],
-    "purposes": ["Pour Over", "Drip", "Espresso"],
+    "flavors": [
+      "Chocolate",
+      "Caramel",
+      "Nutty"
+    ],
+    "purposes": [
+      "Pour Over",
+      "Drip",
+      "Espresso"
+    ],
     "acidity": 3,
     "body": 3,
     "sweetness": 4,
-    "price": 15.0,
+    "price": 15,
     "currency": "GBP",
     "weight": "250g",
     "variety": "Yellow Catuai",
@@ -231,7 +340,11 @@
     "inStock": true,
     "featured": false,
     "createdAt": "2025-01-11T08:00:00.000Z",
-    "updatedAt": "2025-01-11T08:00:00.000Z"
+    "updatedAt": "2025-01-11T08:00:00.000Z",
+    "retailerId": "formative-coffee",
+    "affiliateUrl": "",
+    "affiliateNetwork": "",
+    "merchantId": ""
   },
   {
     "id": "formative-coffee-berry-jam",
@@ -241,12 +354,18 @@
     "country": "Ethiopia",
     "image": "https://formative.coffee/cdn/shop/files/berry-jam-v2.png?v=1776791647&width=960",
     "roast": "Medium",
-    "flavors": ["Berry"],
-    "purposes": ["Pour Over", "Drip", "Espresso"],
+    "flavors": [
+      "Berry"
+    ],
+    "purposes": [
+      "Pour Over",
+      "Drip",
+      "Espresso"
+    ],
     "acidity": 3,
     "body": 3,
     "sweetness": 4,
-    "price": 15.0,
+    "price": 15,
     "currency": "GBP",
     "weight": "250g",
     "variety": "Heirloom",
@@ -257,7 +376,11 @@
     "inStock": true,
     "featured": true,
     "createdAt": "2025-01-11T08:30:00.000Z",
-    "updatedAt": "2025-01-11T08:30:00.000Z"
+    "updatedAt": "2025-01-11T08:30:00.000Z",
+    "retailerId": "formative-coffee",
+    "affiliateUrl": "",
+    "affiliateNetwork": "",
+    "merchantId": ""
   },
   {
     "id": "formative-coffee-decaf---popayn",
@@ -267,12 +390,20 @@
     "country": "Colombia",
     "image": "https://formative.coffee/cdn/shop/files/decaf-v2.png?v=1776792124&width=960",
     "roast": "Medium",
-    "flavors": ["Nutty", "Chocolate", "Caramel"],
-    "purposes": ["Pour Over", "Drip", "Espresso"],
+    "flavors": [
+      "Nutty",
+      "Chocolate",
+      "Caramel"
+    ],
+    "purposes": [
+      "Pour Over",
+      "Drip",
+      "Espresso"
+    ],
     "acidity": 3,
     "body": 3,
     "sweetness": 4,
-    "price": 15.0,
+    "price": 15,
     "currency": "GBP",
     "weight": "250g",
     "variety": "Castillo",
@@ -283,7 +414,11 @@
     "inStock": true,
     "featured": false,
     "createdAt": "2025-01-11T09:00:00.000Z",
-    "updatedAt": "2025-01-11T09:00:00.000Z"
+    "updatedAt": "2025-01-11T09:00:00.000Z",
+    "retailerId": "formative-coffee",
+    "affiliateUrl": "",
+    "affiliateNetwork": "",
+    "merchantId": ""
   },
   {
     "id": "formative-coffee-peachy",
@@ -293,12 +428,19 @@
     "country": "Colombia",
     "image": "https://formative.coffee/cdn/shop/files/Screenshot_2026-03-30_at_09.28.01.png?v=1774859298&width=1280",
     "roast": "Medium",
-    "flavors": ["Stone Fruit", "Chocolate"],
-    "purposes": ["Pour Over", "Drip", "Espresso"],
+    "flavors": [
+      "Stone Fruit",
+      "Chocolate"
+    ],
+    "purposes": [
+      "Pour Over",
+      "Drip",
+      "Espresso"
+    ],
     "acidity": 3,
     "body": 3,
     "sweetness": 4,
-    "price": 15.0,
+    "price": 15,
     "currency": "GBP",
     "weight": "250g",
     "variety": "Pink Bourbon",
@@ -309,7 +451,11 @@
     "inStock": true,
     "featured": false,
     "createdAt": "2025-01-11T09:30:00.000Z",
-    "updatedAt": "2025-01-11T09:30:00.000Z"
+    "updatedAt": "2025-01-11T09:30:00.000Z",
+    "retailerId": "formative-coffee",
+    "affiliateUrl": "",
+    "affiliateNetwork": "",
+    "merchantId": ""
   },
   {
     "id": "formative-coffee-fizzy-apple",
@@ -319,12 +465,18 @@
     "country": "Colombia",
     "image": "https://formative.coffee/cdn/shop/files/0034_Fizzy_Apple_-_info.png?v=1762427669&width=1280",
     "roast": "Medium",
-    "flavors": ["Citrus"],
-    "purposes": ["Pour Over", "Drip", "Espresso"],
+    "flavors": [
+      "Citrus"
+    ],
+    "purposes": [
+      "Pour Over",
+      "Drip",
+      "Espresso"
+    ],
     "acidity": 3,
     "body": 3,
     "sweetness": 4,
-    "price": 15.0,
+    "price": 15,
     "currency": "GBP",
     "weight": "250g",
     "variety": "Castillo",
@@ -335,7 +487,11 @@
     "inStock": true,
     "featured": false,
     "createdAt": "2025-01-11T10:00:00.000Z",
-    "updatedAt": "2025-01-11T10:00:00.000Z"
+    "updatedAt": "2025-01-11T10:00:00.000Z",
+    "retailerId": "formative-coffee",
+    "affiliateUrl": "",
+    "affiliateNetwork": "",
+    "merchantId": ""
   },
   {
     "id": "formative-coffee-mandarin",
@@ -345,12 +501,19 @@
     "country": "Panama",
     "image": "https://formative.coffee/cdn/shop/files/0062_Mandarin_-_info.png?v=1762428004&width=1280",
     "roast": "Medium",
-    "flavors": ["Stone Fruit", "Floral"],
-    "purposes": ["Pour Over", "Drip", "Espresso"],
+    "flavors": [
+      "Stone Fruit",
+      "Floral"
+    ],
+    "purposes": [
+      "Pour Over",
+      "Drip",
+      "Espresso"
+    ],
     "acidity": 3,
     "body": 3,
     "sweetness": 4,
-    "price": 15.0,
+    "price": 15,
     "currency": "GBP",
     "weight": "250g",
     "variety": "Geisha",
@@ -361,7 +524,11 @@
     "inStock": true,
     "featured": false,
     "createdAt": "2025-01-11T10:30:00.000Z",
-    "updatedAt": "2025-01-11T10:30:00.000Z"
+    "updatedAt": "2025-01-11T10:30:00.000Z",
+    "retailerId": "formative-coffee",
+    "affiliateUrl": "",
+    "affiliateNetwork": "",
+    "merchantId": ""
   },
   {
     "id": "formative-coffee-orange-blossom",
@@ -371,12 +538,22 @@
     "country": "Panama",
     "image": "https://formative.coffee/cdn/shop/files/0049_Orange_Blossom_-_info.png?v=1762427668&width=1280",
     "roast": "Medium",
-    "flavors": ["Floral", "Spice", "Stone Fruit", "Citrus", "Berry"],
-    "purposes": ["Pour Over", "Drip", "Espresso"],
+    "flavors": [
+      "Floral",
+      "Spice",
+      "Stone Fruit",
+      "Citrus",
+      "Berry"
+    ],
+    "purposes": [
+      "Pour Over",
+      "Drip",
+      "Espresso"
+    ],
     "acidity": 3,
     "body": 3,
     "sweetness": 4,
-    "price": 15.0,
+    "price": 15,
     "currency": "GBP",
     "weight": "250g",
     "variety": "Geisha",
@@ -387,7 +564,11 @@
     "inStock": true,
     "featured": false,
     "createdAt": "2025-01-11T11:00:00.000Z",
-    "updatedAt": "2025-01-11T11:00:00.000Z"
+    "updatedAt": "2025-01-11T11:00:00.000Z",
+    "retailerId": "formative-coffee",
+    "affiliateUrl": "",
+    "affiliateNetwork": "",
+    "merchantId": ""
   },
   {
     "id": "formative-coffee-pink-starburst",
@@ -397,12 +578,19 @@
     "country": "Colombia",
     "image": "https://formative.coffee/cdn/shop/files/Screenshot2026-05-28at13.27.25.png?v=1779971259&width=1280",
     "roast": "Medium",
-    "flavors": ["Stone Fruit", "Chocolate"],
-    "purposes": ["Pour Over", "Drip", "Espresso"],
+    "flavors": [
+      "Stone Fruit",
+      "Chocolate"
+    ],
+    "purposes": [
+      "Pour Over",
+      "Drip",
+      "Espresso"
+    ],
     "acidity": 3,
     "body": 3,
     "sweetness": 4,
-    "price": 15.0,
+    "price": 15,
     "currency": "GBP",
     "weight": "250g",
     "variety": "Pink Bourbon",
@@ -413,7 +601,11 @@
     "inStock": true,
     "featured": false,
     "createdAt": "2025-01-11T11:30:00.000Z",
-    "updatedAt": "2025-01-11T11:30:00.000Z"
+    "updatedAt": "2025-01-11T11:30:00.000Z",
+    "retailerId": "formative-coffee",
+    "affiliateUrl": "",
+    "affiliateNetwork": "",
+    "merchantId": ""
   },
   {
     "id": "formative-coffee-elderflower-drops",
@@ -423,12 +615,19 @@
     "country": "Colombia",
     "image": "https://formative.coffee/cdn/shop/files/Screenshot2026-05-28at13.27.44.png?v=1779972050&width=1280",
     "roast": "Medium",
-    "flavors": ["Floral", "Citrus"],
-    "purposes": ["Pour Over", "Drip", "Espresso"],
+    "flavors": [
+      "Floral",
+      "Citrus"
+    ],
+    "purposes": [
+      "Pour Over",
+      "Drip",
+      "Espresso"
+    ],
     "acidity": 3,
     "body": 3,
     "sweetness": 4,
-    "price": 15.0,
+    "price": 15,
     "currency": "GBP",
     "weight": "250g",
     "variety": "Geisha",
@@ -439,7 +638,11 @@
     "inStock": true,
     "featured": false,
     "createdAt": "2025-01-11T12:00:00.000Z",
-    "updatedAt": "2025-01-11T12:00:00.000Z"
+    "updatedAt": "2025-01-11T12:00:00.000Z",
+    "retailerId": "formative-coffee",
+    "affiliateUrl": "",
+    "affiliateNetwork": "",
+    "merchantId": ""
   },
   {
     "id": "formative-coffee-decaf---popayn-subscription",
@@ -449,12 +652,20 @@
     "country": "Colombia",
     "image": "https://formative.coffee/cdn/shop/files/0058_Decaf_Popayan_-_info.png?v=1776791197&width=1280",
     "roast": "Medium",
-    "flavors": ["Nutty", "Chocolate", "Caramel"],
-    "purposes": ["Pour Over", "Drip", "Espresso"],
+    "flavors": [
+      "Nutty",
+      "Chocolate",
+      "Caramel"
+    ],
+    "purposes": [
+      "Pour Over",
+      "Drip",
+      "Espresso"
+    ],
     "acidity": 3,
     "body": 3,
     "sweetness": 4,
-    "price": 15.0,
+    "price": 15,
     "currency": "GBP",
     "weight": "250g",
     "variety": "Castillo",
@@ -465,7 +676,11 @@
     "inStock": true,
     "featured": false,
     "createdAt": "2025-01-11T12:30:00.000Z",
-    "updatedAt": "2025-01-11T12:30:00.000Z"
+    "updatedAt": "2025-01-11T12:30:00.000Z",
+    "retailerId": "formative-coffee",
+    "affiliateUrl": "",
+    "affiliateNetwork": "",
+    "merchantId": ""
   },
   {
     "id": "rave-coffee-signature-blend-n-1",
@@ -475,8 +690,17 @@
     "country": "Blend",
     "image": "https://ravecoffee.co.uk/cdn/shop/files/026.UnordinaryOatBlendPDP-250gPack_2957cb4e-1940-44e4-a97b-bdc1574be359_2880x.webp?v=1775745457",
     "roast": "Medium",
-    "flavors": ["Nutty", "Chocolate", "Caramel"],
-    "purposes": ["Espresso", "Pour Over", "Drip", "French Press"],
+    "flavors": [
+      "Nutty",
+      "Chocolate",
+      "Caramel"
+    ],
+    "purposes": [
+      "Espresso",
+      "Pour Over",
+      "Drip",
+      "French Press"
+    ],
     "acidity": 3,
     "body": 3,
     "sweetness": 4,
@@ -491,7 +715,11 @@
     "inStock": true,
     "featured": true,
     "createdAt": "2025-01-12T08:00:00.000Z",
-    "updatedAt": "2025-01-12T08:00:00.000Z"
+    "updatedAt": "2025-01-12T08:00:00.000Z",
+    "retailerId": "rave-coffee",
+    "affiliateUrl": "",
+    "affiliateNetwork": "",
+    "merchantId": ""
   },
   {
     "id": "rave-coffee-unordinary-oat-blend-n-26",
@@ -501,8 +729,14 @@
     "country": "Colombia",
     "image": "https://ravecoffee.co.uk/cdn/shop/files/026.UnordinaryOatBlendPDP-250gPack_2957cb4e-1940-44e4-a97b-bdc1574be359_2880x.webp?v=1775745457",
     "roast": "Medium-Dark",
-    "flavors": ["Berry", "Caramel", "Nutty"],
-    "purposes": ["Espresso"],
+    "flavors": [
+      "Berry",
+      "Caramel",
+      "Nutty"
+    ],
+    "purposes": [
+      "Espresso"
+    ],
     "acidity": 2,
     "body": 4,
     "sweetness": 3,
@@ -517,7 +751,11 @@
     "inStock": true,
     "featured": false,
     "createdAt": "2025-01-12T08:30:00.000Z",
-    "updatedAt": "2025-01-12T08:30:00.000Z"
+    "updatedAt": "2025-01-12T08:30:00.000Z",
+    "retailerId": "rave-coffee",
+    "affiliateUrl": "",
+    "affiliateNetwork": "",
+    "merchantId": ""
   },
   {
     "id": "rave-coffee-the-italian-job-blend-n-2",
@@ -527,8 +765,13 @@
     "country": "Blend",
     "image": "https://ravecoffee.co.uk/cdn/shop/files/002ItalianJobBlendPDP-250gPack_2880x.webp?v=1779190125",
     "roast": "Dark",
-    "flavors": ["Chocolate", "Nutty"],
-    "purposes": ["Espresso"],
+    "flavors": [
+      "Chocolate",
+      "Nutty"
+    ],
+    "purposes": [
+      "Espresso"
+    ],
     "acidity": 1,
     "body": 5,
     "sweetness": 2,
@@ -543,7 +786,11 @@
     "inStock": true,
     "featured": false,
     "createdAt": "2025-01-12T09:00:00.000Z",
-    "updatedAt": "2025-01-12T09:00:00.000Z"
+    "updatedAt": "2025-01-12T09:00:00.000Z",
+    "retailerId": "rave-coffee",
+    "affiliateUrl": "",
+    "affiliateNetwork": "",
+    "merchantId": ""
   },
   {
     "id": "rave-coffee-fudge-blend-n-5",
@@ -553,8 +800,12 @@
     "country": "Blend",
     "image": "https://ravecoffee.co.uk/cdn/shop/files/005FudgeBlendPDP-250gPack_2880x.webp?v=1779190364",
     "roast": "Medium",
-    "flavors": ["Caramel"],
-    "purposes": ["Espresso"],
+    "flavors": [
+      "Caramel"
+    ],
+    "purposes": [
+      "Espresso"
+    ],
     "acidity": 3,
     "body": 3,
     "sweetness": 4,
@@ -569,7 +820,11 @@
     "inStock": true,
     "featured": false,
     "createdAt": "2025-01-12T09:30:00.000Z",
-    "updatedAt": "2025-01-12T09:30:00.000Z"
+    "updatedAt": "2025-01-12T09:30:00.000Z",
+    "retailerId": "rave-coffee",
+    "affiliateUrl": "",
+    "affiliateNetwork": "",
+    "merchantId": ""
   },
   {
     "id": "rave-coffee-chatswood-blend-n-6",
@@ -579,8 +834,13 @@
     "country": "Blend",
     "image": "https://ravecoffee.co.uk/cdn/shop/files/006ChatsworthBlendPDP-250gPack_2880x.webp?v=1779190313",
     "roast": "Dark",
-    "flavors": ["Chocolate"],
-    "purposes": ["French Press", "Espresso"],
+    "flavors": [
+      "Chocolate"
+    ],
+    "purposes": [
+      "French Press",
+      "Espresso"
+    ],
     "acidity": 1,
     "body": 5,
     "sweetness": 2,
@@ -595,7 +855,11 @@
     "inStock": true,
     "featured": false,
     "createdAt": "2025-01-12T10:00:00.000Z",
-    "updatedAt": "2025-01-12T10:00:00.000Z"
+    "updatedAt": "2025-01-12T10:00:00.000Z",
+    "retailerId": "rave-coffee",
+    "affiliateUrl": "",
+    "affiliateNetwork": "",
+    "merchantId": ""
   },
   {
     "id": "rave-coffee-strong-af-blend-n-666",
@@ -605,8 +869,13 @@
     "country": "Blend",
     "image": "https://ravecoffee.co.uk/cdn/shop/files/666StrongAFBlendPDP-250gPack_2880x.webp?v=1779190764",
     "roast": "Dark",
-    "flavors": ["Chocolate", "Nutty"],
-    "purposes": ["Espresso"],
+    "flavors": [
+      "Chocolate",
+      "Nutty"
+    ],
+    "purposes": [
+      "Espresso"
+    ],
     "acidity": 1,
     "body": 5,
     "sweetness": 2,
@@ -621,7 +890,11 @@
     "inStock": true,
     "featured": false,
     "createdAt": "2025-01-12T10:30:00.000Z",
-    "updatedAt": "2025-01-12T10:30:00.000Z"
+    "updatedAt": "2025-01-12T10:30:00.000Z",
+    "retailerId": "rave-coffee",
+    "affiliateUrl": "",
+    "affiliateNetwork": "",
+    "merchantId": ""
   },
   {
     "id": "rave-coffee-seasonal-organic-coffee-blend-n-7",
@@ -631,8 +904,15 @@
     "country": "Colombia",
     "image": "https://ravecoffee.co.uk/cdn/shop/files/007SeasonalOrganicBlendPDP-250gPack_2880x.webp?v=1779190527",
     "roast": "Medium",
-    "flavors": ["Nutty", "Chocolate", "Caramel"],
-    "purposes": ["Pour Over", "Drip"],
+    "flavors": [
+      "Nutty",
+      "Chocolate",
+      "Caramel"
+    ],
+    "purposes": [
+      "Pour Over",
+      "Drip"
+    ],
     "acidity": 3,
     "body": 3,
     "sweetness": 4,
@@ -647,7 +927,11 @@
     "inStock": true,
     "featured": false,
     "createdAt": "2025-01-12T11:00:00.000Z",
-    "updatedAt": "2025-01-12T11:00:00.000Z"
+    "updatedAt": "2025-01-12T11:00:00.000Z",
+    "retailerId": "rave-coffee",
+    "affiliateUrl": "",
+    "affiliateNetwork": "",
+    "merchantId": ""
   },
   {
     "id": "rave-coffee-mocha-java-blend-n-3",
@@ -657,8 +941,17 @@
     "country": "Blend",
     "image": "https://ravecoffee.co.uk/cdn/shop/files/003MochaJavaBlendPDP-250gPack_2880x.webp?v=1779190188",
     "roast": "Medium-Dark",
-    "flavors": ["Chocolate", "Earthy", "Nutty"],
-    "purposes": ["Espresso", "Pour Over", "Drip", "French Press"],
+    "flavors": [
+      "Chocolate",
+      "Earthy",
+      "Nutty"
+    ],
+    "purposes": [
+      "Espresso",
+      "Pour Over",
+      "Drip",
+      "French Press"
+    ],
     "acidity": 2,
     "body": 4,
     "sweetness": 3,
@@ -673,7 +966,11 @@
     "inStock": true,
     "featured": false,
     "createdAt": "2025-01-12T11:30:00.000Z",
-    "updatedAt": "2025-01-12T11:30:00.000Z"
+    "updatedAt": "2025-01-12T11:30:00.000Z",
+    "retailerId": "rave-coffee",
+    "affiliateUrl": "",
+    "affiliateNetwork": "",
+    "merchantId": ""
   },
   {
     "id": "rave-coffee-espresso-blend-n-4",
@@ -683,8 +980,14 @@
     "country": "Blend",
     "image": "https://ravecoffee.co.uk/cdn/shop/files/004EspressoBlendPDP-250gPack_2880x.webp?v=1779190451",
     "roast": "Medium-Dark",
-    "flavors": ["Spice", "Chocolate", "Caramel"],
-    "purposes": ["Espresso"],
+    "flavors": [
+      "Spice",
+      "Chocolate",
+      "Caramel"
+    ],
+    "purposes": [
+      "Espresso"
+    ],
     "acidity": 2,
     "body": 4,
     "sweetness": 3,
@@ -699,7 +1002,11 @@
     "inStock": true,
     "featured": false,
     "createdAt": "2025-01-12T12:00:00.000Z",
-    "updatedAt": "2025-01-12T12:00:00.000Z"
+    "updatedAt": "2025-01-12T12:00:00.000Z",
+    "retailerId": "rave-coffee",
+    "affiliateUrl": "",
+    "affiliateNetwork": "",
+    "merchantId": ""
   },
   {
     "id": "rave-coffee-signature-blend-decaf-n-1d",
@@ -709,8 +1016,17 @@
     "country": "Guatemala",
     "image": "https://ravecoffee.co.uk/cdn/shop/files/001SignatureBlendPDP-250gPack_daf79ec3-dafe-4acd-8669-ba7a3f99acb4_2880x.webp?v=1779886643",
     "roast": "Medium",
-    "flavors": ["Chocolate", "Caramel", "Nutty"],
-    "purposes": ["Espresso", "Pour Over", "Drip", "French Press"],
+    "flavors": [
+      "Chocolate",
+      "Caramel",
+      "Nutty"
+    ],
+    "purposes": [
+      "Espresso",
+      "Pour Over",
+      "Drip",
+      "French Press"
+    ],
     "acidity": 3,
     "body": 3,
     "sweetness": 4,
@@ -725,7 +1041,11 @@
     "inStock": true,
     "featured": false,
     "createdAt": "2025-01-12T12:30:00.000Z",
-    "updatedAt": "2025-01-12T12:30:00.000Z"
+    "updatedAt": "2025-01-12T12:30:00.000Z",
+    "retailerId": "rave-coffee",
+    "affiliateUrl": "",
+    "affiliateNetwork": "",
+    "merchantId": ""
   },
   {
     "id": "rave-coffee-swiss-water-decaf-blend-n-11",
@@ -735,8 +1055,17 @@
     "country": "Blend",
     "image": "https://ravecoffee.co.uk/cdn/shop/files/011SwissWaterDecafBlendPDP-250gPack-BESTBUY_2880x.webp?v=1779190664",
     "roast": "Medium-Dark",
-    "flavors": ["Spice", "Chocolate", "Earthy"],
-    "purposes": ["Espresso", "Pour Over", "Drip", "French Press"],
+    "flavors": [
+      "Spice",
+      "Chocolate",
+      "Earthy"
+    ],
+    "purposes": [
+      "Espresso",
+      "Pour Over",
+      "Drip",
+      "French Press"
+    ],
     "acidity": 2,
     "body": 4,
     "sweetness": 3,
@@ -751,7 +1080,11 @@
     "inStock": true,
     "featured": false,
     "createdAt": "2025-01-12T13:00:00.000Z",
-    "updatedAt": "2025-01-12T13:00:00.000Z"
+    "updatedAt": "2025-01-12T13:00:00.000Z",
+    "retailerId": "rave-coffee",
+    "affiliateUrl": "",
+    "affiliateNetwork": "",
+    "merchantId": ""
   },
   {
     "id": "rave-coffee-half-caf-blend-n-13",
@@ -761,8 +1094,17 @@
     "country": "Blend",
     "image": "https://ravecoffee.co.uk/cdn/shop/files/013HalfCafBlendPDP-250gPack_2880x.webp?v=1779190714",
     "roast": "Medium",
-    "flavors": ["Chocolate", "Caramel", "Nutty"],
-    "purposes": ["Espresso", "Pour Over", "Drip", "French Press"],
+    "flavors": [
+      "Chocolate",
+      "Caramel",
+      "Nutty"
+    ],
+    "purposes": [
+      "Espresso",
+      "Pour Over",
+      "Drip",
+      "French Press"
+    ],
     "acidity": 3,
     "body": 3,
     "sweetness": 4,
@@ -777,7 +1119,11 @@
     "inStock": true,
     "featured": false,
     "createdAt": "2025-01-12T13:30:00.000Z",
-    "updatedAt": "2025-01-12T13:30:00.000Z"
+    "updatedAt": "2025-01-12T13:30:00.000Z",
+    "retailerId": "rave-coffee",
+    "affiliateUrl": "",
+    "affiliateNetwork": "",
+    "merchantId": ""
   },
   {
     "id": "monmouth-coffee-finca-santa-catalina",
@@ -787,8 +1133,16 @@
     "country": "Guatemala",
     "image": "https://www.monmouthcoffee.co.uk/wp-content/uploads/2017/10/Guatemala-Finca-Santa-Catalina-24.jpg",
     "roast": "Medium",
-    "flavors": ["Chocolate", "Caramel"],
-    "purposes": ["Espresso", "Pour Over", "Drip", "French Press"],
+    "flavors": [
+      "Chocolate",
+      "Caramel"
+    ],
+    "purposes": [
+      "Espresso",
+      "Pour Over",
+      "Drip",
+      "French Press"
+    ],
     "acidity": 3,
     "body": 3,
     "sweetness": 4,
@@ -803,7 +1157,11 @@
     "inStock": true,
     "featured": true,
     "createdAt": "2025-01-13T08:00:00.000Z",
-    "updatedAt": "2025-01-13T08:00:00.000Z"
+    "updatedAt": "2025-01-13T08:00:00.000Z",
+    "retailerId": "monmouth-coffee",
+    "affiliateUrl": "",
+    "affiliateNetwork": "",
+    "merchantId": ""
   },
   {
     "id": "monmouth-coffee-finca-galeras",
@@ -813,8 +1171,16 @@
     "country": "Colombia",
     "image": "https://www.monmouthcoffee.co.uk/wp-content/uploads/2017/11/Finca-Galeras-ST-4.jpg",
     "roast": "Medium",
-    "flavors": ["Chocolate", "Caramel"],
-    "purposes": ["Espresso", "Pour Over", "Drip", "French Press"],
+    "flavors": [
+      "Chocolate",
+      "Caramel"
+    ],
+    "purposes": [
+      "Espresso",
+      "Pour Over",
+      "Drip",
+      "French Press"
+    ],
     "acidity": 3,
     "body": 3,
     "sweetness": 4,
@@ -829,7 +1195,11 @@
     "inStock": true,
     "featured": false,
     "createdAt": "2025-01-13T08:30:00.000Z",
-    "updatedAt": "2025-01-13T08:30:00.000Z"
+    "updatedAt": "2025-01-13T08:30:00.000Z",
+    "retailerId": "monmouth-coffee",
+    "affiliateUrl": "",
+    "affiliateNetwork": "",
+    "merchantId": ""
   },
   {
     "id": "monmouth-coffee-finca-las-nubes-de-antigua",
@@ -839,8 +1209,16 @@
     "country": "Guatemala",
     "image": "https://www.monmouthcoffee.co.uk/wp-content/uploads/2026/05/La-Nubes-de-Antigua-25-ST.jpg",
     "roast": "Medium",
-    "flavors": ["Chocolate", "Caramel"],
-    "purposes": ["Espresso", "Pour Over", "Drip", "French Press"],
+    "flavors": [
+      "Chocolate",
+      "Caramel"
+    ],
+    "purposes": [
+      "Espresso",
+      "Pour Over",
+      "Drip",
+      "French Press"
+    ],
     "acidity": 3,
     "body": 3,
     "sweetness": 4,
@@ -855,7 +1233,11 @@
     "inStock": true,
     "featured": false,
     "createdAt": "2025-01-13T09:00:00.000Z",
-    "updatedAt": "2025-01-13T09:00:00.000Z"
+    "updatedAt": "2025-01-13T09:00:00.000Z",
+    "retailerId": "monmouth-coffee",
+    "affiliateUrl": "",
+    "affiliateNetwork": "",
+    "merchantId": ""
   },
   {
     "id": "monmouth-coffee-decaf-finca-la-bolsa",
@@ -865,8 +1247,16 @@
     "country": "Guatemala",
     "image": "https://www.monmouthcoffee.co.uk/wp-content/uploads/2021/08/Decaf-Finca-La-Bolsa-ST.jpg",
     "roast": "Medium",
-    "flavors": ["Chocolate", "Caramel"],
-    "purposes": ["Espresso", "Pour Over", "Drip", "French Press"],
+    "flavors": [
+      "Chocolate",
+      "Caramel"
+    ],
+    "purposes": [
+      "Espresso",
+      "Pour Over",
+      "Drip",
+      "French Press"
+    ],
     "acidity": 3,
     "body": 3,
     "sweetness": 4,
@@ -881,7 +1271,11 @@
     "inStock": true,
     "featured": false,
     "createdAt": "2025-01-13T09:30:00.000Z",
-    "updatedAt": "2025-01-13T09:30:00.000Z"
+    "updatedAt": "2025-01-13T09:30:00.000Z",
+    "retailerId": "monmouth-coffee",
+    "affiliateUrl": "",
+    "affiliateNetwork": "",
+    "merchantId": ""
   },
   {
     "id": "monmouth-coffee-huabal",
@@ -891,8 +1285,16 @@
     "country": "Peru",
     "image": "https://www.monmouthcoffee.co.uk/wp-content/uploads/2022/04/Peru-Huabal-24.jpg",
     "roast": "Medium",
-    "flavors": ["Chocolate", "Caramel"],
-    "purposes": ["Espresso", "Pour Over", "Drip", "French Press"],
+    "flavors": [
+      "Chocolate",
+      "Caramel"
+    ],
+    "purposes": [
+      "Espresso",
+      "Pour Over",
+      "Drip",
+      "French Press"
+    ],
     "acidity": 3,
     "body": 3,
     "sweetness": 4,
@@ -907,7 +1309,11 @@
     "inStock": true,
     "featured": false,
     "createdAt": "2025-01-13T10:00:00.000Z",
-    "updatedAt": "2025-01-13T10:00:00.000Z"
+    "updatedAt": "2025-01-13T10:00:00.000Z",
+    "retailerId": "monmouth-coffee",
+    "affiliateUrl": "",
+    "affiliateNetwork": "",
+    "merchantId": ""
   },
   {
     "id": "monmouth-coffee-fazenda-ip",
@@ -917,8 +1323,16 @@
     "country": "Brazil",
     "image": "https://www.monmouthcoffee.co.uk/wp-content/uploads/2019/04/Fazenda-IP-24.jpg",
     "roast": "Medium",
-    "flavors": ["Chocolate", "Caramel"],
-    "purposes": ["Espresso", "Pour Over", "Drip", "French Press"],
+    "flavors": [
+      "Chocolate",
+      "Caramel"
+    ],
+    "purposes": [
+      "Espresso",
+      "Pour Over",
+      "Drip",
+      "French Press"
+    ],
     "acidity": 3,
     "body": 3,
     "sweetness": 4,
@@ -933,7 +1347,11 @@
     "inStock": true,
     "featured": false,
     "createdAt": "2025-01-13T10:30:00.000Z",
-    "updatedAt": "2025-01-13T10:30:00.000Z"
+    "updatedAt": "2025-01-13T10:30:00.000Z",
+    "retailerId": "monmouth-coffee",
+    "affiliateUrl": "",
+    "affiliateNetwork": "",
+    "merchantId": ""
   },
   {
     "id": "monmouth-coffee-finca-oro-verde",
@@ -943,8 +1361,16 @@
     "country": "Bolivia",
     "image": "https://www.monmouthcoffee.co.uk/wp-content/uploads/2023/12/Finca-Oro-Verde-24.jpg",
     "roast": "Medium",
-    "flavors": ["Chocolate", "Caramel"],
-    "purposes": ["Espresso", "Pour Over", "Drip", "French Press"],
+    "flavors": [
+      "Chocolate",
+      "Caramel"
+    ],
+    "purposes": [
+      "Espresso",
+      "Pour Over",
+      "Drip",
+      "French Press"
+    ],
     "acidity": 3,
     "body": 3,
     "sweetness": 4,
@@ -959,7 +1385,11 @@
     "inStock": true,
     "featured": false,
     "createdAt": "2025-01-13T11:00:00.000Z",
-    "updatedAt": "2025-01-13T11:00:00.000Z"
+    "updatedAt": "2025-01-13T11:00:00.000Z",
+    "retailerId": "monmouth-coffee",
+    "affiliateUrl": "",
+    "affiliateNetwork": "",
+    "merchantId": ""
   },
   {
     "id": "monmouth-coffee-monmouth-espresso",
@@ -969,8 +1399,16 @@
     "country": "Blend",
     "image": "https://www.monmouthcoffee.co.uk/wp-content/uploads/2016/10/MEB-24.jpg",
     "roast": "Medium",
-    "flavors": ["Chocolate", "Caramel"],
-    "purposes": ["Espresso", "Pour Over", "Drip", "French Press"],
+    "flavors": [
+      "Chocolate",
+      "Caramel"
+    ],
+    "purposes": [
+      "Espresso",
+      "Pour Over",
+      "Drip",
+      "French Press"
+    ],
     "acidity": 3,
     "body": 3,
     "sweetness": 4,
@@ -985,7 +1423,11 @@
     "inStock": true,
     "featured": false,
     "createdAt": "2025-01-13T11:30:00.000Z",
-    "updatedAt": "2025-01-13T11:30:00.000Z"
+    "updatedAt": "2025-01-13T11:30:00.000Z",
+    "retailerId": "monmouth-coffee",
+    "affiliateUrl": "",
+    "affiliateNetwork": "",
+    "merchantId": ""
   },
   {
     "id": "monmouth-coffee-amaybamba",
@@ -995,8 +1437,16 @@
     "country": "Peru",
     "image": "https://www.monmouthcoffee.co.uk/wp-content/uploads/2026/04/Amaybamba-Bags-ST.jpg",
     "roast": "Medium",
-    "flavors": ["Chocolate", "Caramel"],
-    "purposes": ["Espresso", "Pour Over", "Drip", "French Press"],
+    "flavors": [
+      "Chocolate",
+      "Caramel"
+    ],
+    "purposes": [
+      "Espresso",
+      "Pour Over",
+      "Drip",
+      "French Press"
+    ],
     "acidity": 3,
     "body": 3,
     "sweetness": 4,
@@ -1011,7 +1461,11 @@
     "inStock": true,
     "featured": false,
     "createdAt": "2025-01-13T12:00:00.000Z",
-    "updatedAt": "2025-01-13T12:00:00.000Z"
+    "updatedAt": "2025-01-13T12:00:00.000Z",
+    "retailerId": "monmouth-coffee",
+    "affiliateUrl": "",
+    "affiliateNetwork": "",
+    "merchantId": ""
   },
   {
     "id": "monmouth-coffee-terra-de-so-francisco",
@@ -1021,8 +1475,16 @@
     "country": "Brazil",
     "image": "https://www.monmouthcoffee.co.uk/wp-content/uploads/2025/09/Brazil-Terras-de-Sao-Francisco-25-1.jpg",
     "roast": "Medium",
-    "flavors": ["Chocolate", "Caramel"],
-    "purposes": ["Espresso", "Pour Over", "Drip", "French Press"],
+    "flavors": [
+      "Chocolate",
+      "Caramel"
+    ],
+    "purposes": [
+      "Espresso",
+      "Pour Over",
+      "Drip",
+      "French Press"
+    ],
     "acidity": 3,
     "body": 3,
     "sweetness": 4,
@@ -1037,7 +1499,11 @@
     "inStock": true,
     "featured": false,
     "createdAt": "2025-01-13T12:30:00.000Z",
-    "updatedAt": "2025-01-13T12:30:00.000Z"
+    "updatedAt": "2025-01-13T12:30:00.000Z",
+    "retailerId": "monmouth-coffee",
+    "affiliateUrl": "",
+    "affiliateNetwork": "",
+    "merchantId": ""
   },
   {
     "id": "monmouth-coffee-fazenda-dois-irmos",
@@ -1047,8 +1513,16 @@
     "country": "Brazil",
     "image": "https://www.monmouthcoffee.co.uk/wp-content/uploads/2026/04/Brazil-Fazenda-Dois-Irmaos.jpg",
     "roast": "Medium",
-    "flavors": ["Chocolate", "Caramel"],
-    "purposes": ["Espresso", "Pour Over", "Drip", "French Press"],
+    "flavors": [
+      "Chocolate",
+      "Caramel"
+    ],
+    "purposes": [
+      "Espresso",
+      "Pour Over",
+      "Drip",
+      "French Press"
+    ],
     "acidity": 3,
     "body": 3,
     "sweetness": 4,
@@ -1063,7 +1537,11 @@
     "inStock": true,
     "featured": false,
     "createdAt": "2025-01-13T13:00:00.000Z",
-    "updatedAt": "2025-01-13T13:00:00.000Z"
+    "updatedAt": "2025-01-13T13:00:00.000Z",
+    "retailerId": "monmouth-coffee",
+    "affiliateUrl": "",
+    "affiliateNetwork": "",
+    "merchantId": ""
   },
   {
     "id": "monmouth-coffee-organic-espresso",
@@ -1073,12 +1551,20 @@
     "country": "Blend",
     "image": "https://www.monmouthcoffee.co.uk/wp-content/uploads/2017/09/OEB-24.jpg",
     "roast": "Medium",
-    "flavors": ["Chocolate", "Caramel"],
-    "purposes": ["Espresso", "Pour Over", "Drip", "French Press"],
+    "flavors": [
+      "Chocolate",
+      "Caramel"
+    ],
+    "purposes": [
+      "Espresso",
+      "Pour Over",
+      "Drip",
+      "French Press"
+    ],
     "acidity": 3,
     "body": 3,
     "sweetness": 4,
-    "price": 4.0,
+    "price": 4,
     "currency": "GBP",
     "weight": "250g",
     "variety": "Organic Arabica",
@@ -1089,7 +1575,11 @@
     "inStock": true,
     "featured": false,
     "createdAt": "2025-01-13T13:30:00.000Z",
-    "updatedAt": "2025-01-13T13:30:00.000Z"
+    "updatedAt": "2025-01-13T13:30:00.000Z",
+    "retailerId": "monmouth-coffee",
+    "affiliateUrl": "",
+    "affiliateNetwork": "",
+    "merchantId": ""
   },
   {
     "id": "monmouth-coffee-finca-san-pedro",
@@ -1099,8 +1589,16 @@
     "country": "Colombia",
     "image": "https://www.monmouthcoffee.co.uk/wp-content/uploads/2026/04/San-Pedro-26.jpg",
     "roast": "Medium",
-    "flavors": ["Chocolate", "Caramel"],
-    "purposes": ["Espresso", "Pour Over", "Drip", "French Press"],
+    "flavors": [
+      "Chocolate",
+      "Caramel"
+    ],
+    "purposes": [
+      "Espresso",
+      "Pour Over",
+      "Drip",
+      "French Press"
+    ],
     "acidity": 3,
     "body": 3,
     "sweetness": 4,
@@ -1115,7 +1613,11 @@
     "inStock": true,
     "featured": false,
     "createdAt": "2025-01-13T14:00:00.000Z",
-    "updatedAt": "2025-01-13T14:00:00.000Z"
+    "updatedAt": "2025-01-13T14:00:00.000Z",
+    "retailerId": "monmouth-coffee",
+    "affiliateUrl": "",
+    "affiliateNetwork": "",
+    "merchantId": ""
   },
   {
     "id": "monmouth-coffee-tibebu-roba",
@@ -1125,8 +1627,16 @@
     "country": "Ethiopia",
     "image": "https://www.monmouthcoffee.co.uk/wp-content/uploads/2022/06/Ethiopia-Tibebu-Roba-24.jpg",
     "roast": "Medium",
-    "flavors": ["Chocolate", "Caramel"],
-    "purposes": ["Espresso", "Pour Over", "Drip", "French Press"],
+    "flavors": [
+      "Chocolate",
+      "Caramel"
+    ],
+    "purposes": [
+      "Espresso",
+      "Pour Over",
+      "Drip",
+      "French Press"
+    ],
     "acidity": 3,
     "body": 3,
     "sweetness": 4,
@@ -1141,7 +1651,11 @@
     "inStock": true,
     "featured": false,
     "createdAt": "2025-01-13T14:30:00.000Z",
-    "updatedAt": "2025-01-13T14:30:00.000Z"
+    "updatedAt": "2025-01-13T14:30:00.000Z",
+    "retailerId": "monmouth-coffee",
+    "affiliateUrl": "",
+    "affiliateNetwork": "",
+    "merchantId": ""
   },
   {
     "id": "monmouth-coffee-la-bendicin",
@@ -1151,8 +1665,16 @@
     "country": "El Salvador",
     "image": "https://www.monmouthcoffee.co.uk/wp-content/uploads/2022/02/El-Salvador-La-Bendicion-24.jpg",
     "roast": "Medium",
-    "flavors": ["Chocolate", "Caramel"],
-    "purposes": ["Espresso", "Pour Over", "Drip", "French Press"],
+    "flavors": [
+      "Chocolate",
+      "Caramel"
+    ],
+    "purposes": [
+      "Espresso",
+      "Pour Over",
+      "Drip",
+      "French Press"
+    ],
     "acidity": 3,
     "body": 3,
     "sweetness": 4,
@@ -1167,7 +1689,11 @@
     "inStock": true,
     "featured": false,
     "createdAt": "2025-01-13T15:00:00.000Z",
-    "updatedAt": "2025-01-13T15:00:00.000Z"
+    "updatedAt": "2025-01-13T15:00:00.000Z",
+    "retailerId": "monmouth-coffee",
+    "affiliateUrl": "",
+    "affiliateNetwork": "",
+    "merchantId": ""
   },
   {
     "id": "monmouth-coffee-finca-el-cedral",
@@ -1177,8 +1703,16 @@
     "country": "Costa Rica",
     "image": "https://www.monmouthcoffee.co.uk/wp-content/uploads/2021/11/Finca-El-Cedral-ST.jpg",
     "roast": "Medium",
-    "flavors": ["Chocolate", "Caramel"],
-    "purposes": ["Espresso", "Pour Over", "Drip", "French Press"],
+    "flavors": [
+      "Chocolate",
+      "Caramel"
+    ],
+    "purposes": [
+      "Espresso",
+      "Pour Over",
+      "Drip",
+      "French Press"
+    ],
     "acidity": 3,
     "body": 3,
     "sweetness": 4,
@@ -1193,6 +1727,10 @@
     "inStock": true,
     "featured": false,
     "createdAt": "2025-01-13T15:30:00.000Z",
-    "updatedAt": "2025-01-13T15:30:00.000Z"
+    "updatedAt": "2025-01-13T15:30:00.000Z",
+    "retailerId": "monmouth-coffee",
+    "affiliateUrl": "",
+    "affiliateNetwork": "",
+    "merchantId": ""
   }
 ]

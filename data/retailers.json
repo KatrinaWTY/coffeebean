@@ -1,0 +1,30 @@
+[
+  {
+    "id": "climpson-sons",
+    "name": "Climpson & Sons",
+    "url": "",
+    "createdAt": "2026-08-17T15:46:43.629Z",
+    "updatedAt": "2026-08-17T15:46:43.629Z"
+  },
+  {
+    "id": "formative-coffee",
+    "name": "Formative Coffee",
+    "url": "",
+    "createdAt": "2026-08-17T15:46:43.629Z",
+    "updatedAt": "2026-08-17T15:46:43.629Z"
+  },
+  {
+    "id": "rave-coffee",
+    "name": "Rave Coffee",
+    "url": "",
+    "createdAt": "2026-08-17T15:46:43.629Z",
+    "updatedAt": "2026-08-17T15:46:43.629Z"
+  },
+  {
+    "id": "monmouth-coffee",
+    "name": "Monmouth Coffee",
+    "url": "",
+    "createdAt": "2026-08-17T15:46:43.629Z",
+    "updatedAt": "2026-08-17T15:46:43.629Z"
+  }
+]

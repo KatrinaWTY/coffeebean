@@ -6,9 +6,11 @@ import {
   Globe2,
   AlertTriangle,
   Sparkles,
-  TrendingUp,
 } from "lucide-react"
 import { getBeans, getAdminStats } from "@/lib/db/beans"
+import { getRetailers } from "@/lib/db/retailers"
+import { getClicks } from "@/lib/db/clicks"
+import { getConversions } from "@/lib/db/conversions"
 import { BeanTable } from "@/components/admin/bean-table"
 
 export const dynamic = "force-dynamic"
@@ -16,6 +18,25 @@ export const dynamic = "force-dynamic"
 export default async function AdminCoffeeBeansPage() {
   const beans = await getBeans()
   const stats = await getAdminStats()
+  const retailers = await getRetailers()
+  
+  // Aggregate affiliate clicks
+  const clicks = await getClicks()
+  const clickCounts: Record<string, number> = {}
+  clicks.forEach((click) => {
+    if (click.coffeeBeanId) {
+      clickCounts[click.coffeeBeanId] = (clickCounts[click.coffeeBeanId] || 0) + 1
+    }
+  })
+
+  // Aggregate commissions (Pending, Approved, Paid - excluding Rejected)
+  const conversions = await getConversions()
+  const commissions: Record<string, number> = {}
+  conversions.forEach((conv) => {
+    if (conv.coffeeBeanId && conv.status !== "Rejected") {
+      commissions[conv.coffeeBeanId] = (commissions[conv.coffeeBeanId] || 0) + (conv.commissionValue || 0)
+    }
+  })
 
   return (
     <div className="space-y-8">
@@ -115,7 +136,12 @@ export default async function AdminCoffeeBeansPage() {
       </div>
 
       {/* Main Interactive Table & Filter Component */}
-      <BeanTable initialBeans={beans} />
+      <BeanTable
+        initialBeans={beans}
+        clickCounts={clickCounts}
+        commissions={commissions}
+        retailers={retailers}
+      />
     </div>
   )
 }
