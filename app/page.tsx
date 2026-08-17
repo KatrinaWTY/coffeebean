@@ -1,7 +1,9 @@
 "use client"
 
 import { useMemo, useState } from "react"
+import { usePathname } from "next/navigation"
 import Image from "next/image"
+import Link from "next/link"
 import {
   Coffee,
   Globe,
@@ -11,189 +13,33 @@ import {
   FlaskConical,
   Search,
   SlidersHorizontal,
-  Star,
   X,
   Check as CheckIcon,
+  ChevronDown,
+  Bookmark,
+  User
 } from "lucide-react"
 import { Checkbox as CheckboxPrimitive } from "@base-ui/react/checkbox"
 import { cn } from "@/lib/utils"
 
 // ==========================================
-// Types & Data Model
+// Types & Data Model (Centralized)
 // ==========================================
 
-export type Purpose = "Espresso" | "Pour Over" | "Drip" | "French Press" | "Cold Brew"
+import {
+  type Purpose,
+  type Roast,
+  type Bean,
+  ALL_FLAVORS,
+  ALL_PURPOSES,
+} from "@/lib/types"
+import initialBeans from "@/data/beans.json"
 
-export type Roast = "Light" | "Medium" | "Medium-Dark" | "Dark"
+export type { Purpose, Roast, Bean }
+export { ALL_FLAVORS, ALL_PURPOSES }
 
-export type Bean = {
-  id: string
-  name: string
-  region: string
-  country: string
-  image: string
-  roast: Roast
-  flavors: string[]
-  purposes: Purpose[]
-  acidity: number // 1-5
-  body: number // 1-5
-  sweetness: number // 1-5
-  price: number
-  rating: number
-  blurb: string
-}
+export const beans: Bean[] = initialBeans as Bean[]
 
-export const ALL_FLAVORS = [
-  "Floral",
-  "Berry",
-  "Citrus",
-  "Chocolate",
-  "Caramel",
-  "Nutty",
-  "Stone Fruit",
-  "Earthy",
-  "Spice",
-  "Honey",
-] as const
-
-export const ALL_PURPOSES: Purpose[] = [
-  "Espresso",
-  "Pour Over",
-  "Drip",
-  "French Press",
-  "Cold Brew",
-]
-
-export const beans: Bean[] = [
-  {
-    id: "ethiopia-yirgacheffe",
-    name: "Yirgacheffe",
-    region: "Yirgacheffe",
-    country: "Ethiopia",
-    image: "/beans/ethiopia.png",
-    roast: "Light",
-    flavors: ["Floral", "Citrus", "Berry"],
-    purposes: ["Pour Over", "Drip"],
-    acidity: 5,
-    body: 2,
-    sweetness: 4,
-    price: 19,
-    rating: 4.8,
-    blurb: "Bright and tea-like with jasmine florals and a lemon-zest finish.",
-  },
-  {
-    id: "colombia-huila",
-    name: "Huila Supremo",
-    region: "Huila",
-    country: "Colombia",
-    image: "/beans/colombia.png",
-    roast: "Medium",
-    flavors: ["Caramel", "Citrus", "Nutty"],
-    purposes: ["Drip", "Pour Over", "Espresso"],
-    acidity: 3,
-    body: 3,
-    sweetness: 4,
-    price: 17,
-    rating: 4.6,
-    blurb: "A crowd-pleasing cup balancing sweet caramel with gentle orange.",
-  },
-  {
-    id: "brazil-cerrado",
-    name: "Cerrado",
-    region: "Cerrado",
-    country: "Brazil",
-    image: "/beans/brazil.png",
-    roast: "Medium-Dark",
-    flavors: ["Chocolate", "Nutty", "Caramel"],
-    purposes: ["Espresso", "French Press"],
-    acidity: 1,
-    body: 5,
-    sweetness: 4,
-    price: 15,
-    rating: 4.5,
-    blurb: "Low-acid, nutty, and rich — the cozy backbone of any espresso.",
-  },
-  {
-    id: "kenya-nyeri",
-    name: "Nyeri AA",
-    region: "Nyeri",
-    country: "Kenya",
-    image: "/beans/kenya.png",
-    roast: "Light",
-    flavors: ["Berry", "Citrus", "Stone Fruit"],
-    purposes: ["Pour Over", "Cold Brew"],
-    acidity: 5,
-    body: 3,
-    sweetness: 3,
-    price: 21,
-    rating: 4.7,
-    blurb: "Juicy blackcurrant and grapefruit with a wine-like sparkle.",
-  },
-  {
-    id: "guatemala-antigua",
-    name: "Antigua",
-    region: "Antigua",
-    country: "Guatemala",
-    image: "/beans/guatemala.png",
-    roast: "Medium",
-    flavors: ["Chocolate", "Spice", "Caramel"],
-    purposes: ["Drip", "Espresso", "French Press"],
-    acidity: 3,
-    body: 4,
-    sweetness: 4,
-    price: 18,
-    rating: 4.6,
-    blurb: "Velvety cocoa with a whisper of baking spice and brown sugar.",
-  },
-  {
-    id: "sumatra-mandheling",
-    name: "Mandheling",
-    region: "Mandheling",
-    country: "Sumatra",
-    image: "/beans/sumatra.png",
-    roast: "Dark",
-    flavors: ["Earthy", "Spice", "Chocolate"],
-    purposes: ["French Press", "Cold Brew", "Espresso"],
-    acidity: 1,
-    body: 5,
-    sweetness: 2,
-    price: 18,
-    rating: 4.4,
-    blurb: "Bold, syrupy, and earthy with cedar and dark chocolate depth.",
-  },
-  {
-    id: "costa-rica-tarrazu",
-    name: "Tarrazú",
-    region: "Tarrazú",
-    country: "Costa Rica",
-    image: "/beans/costa-rica.png",
-    roast: "Medium",
-    flavors: ["Honey", "Citrus", "Stone Fruit"],
-    purposes: ["Pour Over", "Drip", "Cold Brew"],
-    acidity: 4,
-    body: 3,
-    sweetness: 5,
-    price: 20,
-    rating: 4.7,
-    blurb: "Honeyed sweetness with bright apricot and a clean, crisp finish.",
-  },
-  {
-    id: "yemen-mokha",
-    name: "Mokha",
-    region: "Bani Matar",
-    country: "Yemen",
-    image: "/beans/yemen.png",
-    roast: "Medium-Dark",
-    flavors: ["Spice", "Berry", "Chocolate"],
-    purposes: ["Espresso", "French Press"],
-    acidity: 2,
-    body: 4,
-    sweetness: 3,
-    price: 26,
-    rating: 4.5,
-    blurb: "Wild and complex with dried fruit, cardamom, and cocoa nibs.",
-  },
-]
 
 export const REGIONS = Array.from(new Set(beans.map((b) => b.country))).sort()
 
@@ -238,32 +84,85 @@ function Badge({ className, children }: { className?: string; children: React.Re
 // App Layout Components
 // ==========================================
 
-export function SiteHeader() {
+export function SiteHeader({ 
+  searchQuery, 
+  setSearchQuery,
+  placeholder = "Search..." 
+}: { 
+  searchQuery?: string
+  setSearchQuery?: (q: string) => void
+  placeholder?: string
+}) {
+  const pathname = usePathname()
+  const isBrands = pathname === "/brands"
+  const isContact = pathname === "/contact"
+
   return (
-    <header className="sticky top-0 z-50 border-b border-border bg-background/80 backdrop-blur">
+    <header className="sticky top-0 z-50 border-b border-border bg-[#FCF8F5]/90 backdrop-blur">
       <div className="mx-auto flex w-full max-w-6xl items-center justify-between px-5 py-4">
-        <a href="#" className="flex items-center gap-2">
-          <span className="flex size-9 items-center justify-center rounded-full bg-primary text-primary-foreground">
-            <Coffee className="size-5" />
+        {/* Logo */}
+        <Link href="/" className="flex items-center gap-2">
+          <span className="font-heading text-2xl font-bold tracking-tight text-[#333]">
+            Bean Directory
           </span>
-          <span className="font-heading text-xl font-semibold text-foreground">
-            Bean Buddy
-          </span>
-        </a>
-        <nav className="hidden items-center gap-7 text-sm font-semibold text-muted-foreground sm:flex">
-          <a href="#explore" className="transition-colors hover:text-foreground">
-            Explore
-          </a>
-          <a href="#how" className="transition-colors hover:text-foreground">
-            How it works
-          </a>
+        </Link>
+
+        {/* Navigation */}
+        <nav className="hidden items-center gap-8 text-sm font-semibold text-muted-foreground md:flex">
+          <Link href="/brands" className={cn(
+            "relative py-1 transition-colors hover:text-foreground",
+            isBrands ? "text-foreground font-bold" : "text-muted-foreground"
+          )}>
+            Roasters
+            {isBrands && (
+              <span className="absolute bottom-0 left-0 right-0 h-[2px] bg-primary rounded-full" />
+            )}
+          </Link>
+          <Link href="/#explore" className="transition-colors hover:text-foreground py-1">
+            Origins
+          </Link>
+          <Link href="/#explore" className="transition-colors hover:text-foreground py-1">
+            Methods
+          </Link>
+          <Link href="/#how" className="transition-colors hover:text-foreground py-1">
+            Sustainability
+          </Link>
+          <Link href="/contact" className={cn(
+            "relative py-1 transition-colors hover:text-foreground",
+            isContact ? "text-foreground font-bold" : "text-muted-foreground"
+          )}>
+            聯絡我們
+            {isContact && (
+              <span className="absolute bottom-0 left-0 right-0 h-[2px] bg-primary rounded-full" />
+            )}
+          </Link>
         </nav>
-        <a
-          href="#explore"
-          className="rounded-full bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground transition-colors hover:bg-primary/90"
-        >
-          Start brewing
-        </a>
+
+        {/* Search & Icons */}
+        <div className="flex items-center gap-4">
+          <div className="relative w-40 sm:w-64">
+            <Search className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
+            <input
+              type="text"
+              placeholder={placeholder}
+              value={searchQuery || ""}
+              onChange={(e) => setSearchQuery && setSearchQuery(e.target.value)}
+              disabled={!setSearchQuery}
+              className="w-full rounded-full border border-border bg-[#FCF8F5]/50 hover:bg-[#FCF8F5] py-2 pl-9 pr-4 text-xs font-semibold text-foreground outline-none transition-colors placeholder:text-muted-foreground focus:border-primary focus:ring-1 focus:ring-primary/20 disabled:cursor-not-allowed"
+            />
+          </div>
+          <button className="p-2 text-muted-foreground hover:text-foreground transition-colors" aria-label="Bookmarks">
+            <Bookmark className="size-5" />
+          </button>
+          <Link
+            href="/admin"
+            className="p-2 text-muted-foreground hover:text-foreground transition-colors"
+            aria-label="Admin Portal"
+            title="Admin Portal"
+          >
+            <User className="size-5" />
+          </Link>
+        </div>
       </div>
     </header>
   )
@@ -271,23 +170,47 @@ export function SiteHeader() {
 
 export function SiteFooter() {
   return (
-    <footer className="border-t border-border bg-background">
-      <div className="mx-auto flex w-full max-w-6xl flex-col items-center gap-4 px-5 py-10 text-center">
-        <div className="flex items-center gap-2">
-          <span className="flex size-8 items-center justify-center rounded-full bg-primary text-primary-foreground">
-            <Coffee className="size-4" />
+    <footer className="border-t border-border bg-[#FCF8F5] py-12">
+      <div className="mx-auto flex w-full max-w-6xl flex-col gap-8 px-5 md:flex-row md:justify-between md:items-start">
+        <div className="flex flex-col gap-3 max-w-sm">
+          <span className="font-heading text-xl font-bold text-[#333]">
+            Bean Directory
           </span>
-          <span className="font-heading text-lg font-semibold text-foreground">
-            Bean Buddy
-          </span>
+          <p className="text-sm leading-relaxed text-muted-foreground">
+            Elevating the coffee experience through curated discovery and technical precision.
+          </p>
+          <p className="text-xs text-muted-foreground mt-2">
+            © 2024 Bean Directory. Brewed with precision.
+          </p>
         </div>
-        <p className="max-w-xs text-sm leading-relaxed text-muted-foreground">
-          A cozy little place to compare coffee beans and find your perfect cup.
-        </p>
-        <p className="text-xs text-muted-foreground">
-          {"© "}
-          {new Date().getFullYear()} Bean Buddy. Brewed with love.
-        </p>
+
+        <div className="flex gap-16">
+          <div className="flex flex-col gap-3">
+            <h4 className="text-xs font-bold uppercase tracking-wider text-[#333]">Resources</h4>
+            <Link href="/#explore" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+              Brewing Guides
+            </Link>
+            <Link href="/#explore" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+              Roasting Science
+            </Link>
+            <Link href="/admin" className="text-sm font-semibold text-primary hover:underline transition-colors">
+              Admin Panel
+            </Link>
+          </div>
+
+          <div className="flex flex-col gap-3">
+            <h4 className="text-xs font-bold uppercase tracking-wider text-[#333]">About</h4>
+            <Link href="/#how" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+              Green Coffee Sourcing
+            </Link>
+            <Link href="/#how" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+              Accessibility
+            </Link>
+            <Link href="/contact" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+              聯絡我們
+            </Link>
+          </div>
+        </div>
       </div>
     </footer>
   )
@@ -329,15 +252,15 @@ export function Hero() {
             </a>
           </div>
           <div className="flex flex-wrap gap-6 pt-2">
-            <Stat icon={<Coffee className="size-4" />} value="8" label="Beans" />
+            <Stat icon={<Coffee className="size-4" />} value={beans.length.toString()} label="Beans" />
             <Stat
               icon={<Globe className="size-4" />}
-              value="8"
+              value={new Set(beans.map((b) => b.country)).size.toString()}
               label="Origins"
             />
             <Stat
               icon={<Sparkles className="size-4" />}
-              value="10"
+              value={ALL_FLAVORS.length.toString()}
               label="Flavor notes"
             />
           </div>
@@ -442,29 +365,45 @@ export function HowItWorks() {
 // Bean Card & Filter Components
 // ==========================================
 
-function Meter({ label, value }: { label: string; value: number }) {
-  return (
-    <div className="flex flex-col gap-1">
-      <span className="text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">
-        {label}
-      </span>
-      <div className="flex gap-1" aria-label={`${label}: ${value} out of 5`}>
-        {Array.from({ length: 5 }).map((_, i) => (
-          <span
-            key={i}
-            className={`h-1.5 w-full rounded-full ${
-              i < value ? "bg-primary" : "bg-border"
-            }`}
-          />
-        ))}
-      </div>
-    </div>
-  )
-}
 
 export function BeanCard({ bean }: { bean: Bean }) {
+  const { brand, name: cleanedName } = useMemo(() => {
+    if (bean.roaster) {
+      let name = bean.name
+      // If name starts with roaster prefix, clean it
+      if (name.startsWith(`${bean.roaster} - `)) {
+        name = name.replace(`${bean.roaster} - `, "")
+      }
+      return { brand: bean.roaster, name }
+    }
+    const parts = bean.name.split(" - ")
+    const brand = parts[0]
+    let name = parts.slice(1).join(" - ")
+    
+    // Clean up parenthesis if any (like Monmouth's " (Finca Santa Catalina)")
+    name = name.replace(/^\s*\((.*)\)\s*$/, '$1').trim()
+    
+    // Strip country suffix (e.g. ", Brazil" or ", Colombia" or ", Ethiopia")
+    const countrySuffixReg = new RegExp(`,\\s*${bean.country}\\s*$`, 'i')
+    name = name.replace(countrySuffixReg, '').trim()
+    
+    // Strip "The Baron: ", "The Estate: ", etc.
+    name = name.replace(/^(The Baron:\s*|The Estate:\s*|The Fields:\s*|Decaf:\s*)/i, '').trim()
+    
+    return { brand, name }
+  }, [bean.name, bean.country, bean.roaster])
+
+  const locationText = useMemo(() => {
+    const loc = bean.region
+      ? bean.region.toLowerCase().includes(bean.country.toLowerCase())
+        ? bean.region
+        : `${bean.region}, ${bean.country}`
+      : bean.country
+    return loc.toUpperCase()
+  }, [bean.region, bean.country])
+
   return (
-    <article className="group flex flex-col overflow-hidden rounded-3xl border border-border bg-card transition-all hover:-translate-y-1 hover:shadow-[0_18px_40px_-22px_rgba(120,80,40,0.45)]">
+    <article className="group flex flex-col overflow-hidden rounded-3xl border border-[#EADFD7] bg-white transition-all hover:-translate-y-1 hover:shadow-[0_18px_40px_-22px_rgba(120,80,40,0.45)]">
       <div className="relative aspect-[4/3] overflow-hidden bg-secondary">
         <Image
           src={bean.image || "/placeholder.svg"}
@@ -473,29 +412,24 @@ export function BeanCard({ bean }: { bean: Bean }) {
           sizes="(max-width: 768px) 100vw, 33vw"
           className="object-cover transition-transform duration-500 group-hover:scale-105"
         />
-        <div className="absolute left-3 top-3 flex items-center gap-1 rounded-full bg-card/90 px-2.5 py-1 text-xs font-semibold text-foreground backdrop-blur">
-          <Star className="size-3.5 fill-primary text-primary" />
-          {bean.rating}
-        </div>
         <Badge className="absolute right-3 top-3 rounded-full bg-accent text-accent-foreground hover:bg-accent">
           {bean.roast}
         </Badge>
       </div>
 
       <div className="flex flex-1 flex-col gap-4 p-5">
-        <div className="flex flex-col gap-1">
-          <div className="flex items-center gap-1 text-xs font-semibold text-muted-foreground">
-            <MapPin className="size-3.5" />
-            {bean.region}, {bean.country}
+        <div className="flex flex-col gap-1.5">
+          <div className="flex items-center gap-1 text-[10px] font-bold tracking-wider text-muted-foreground/80 uppercase">
+            <MapPin className="size-3.5 text-primary/70" />
+            {locationText}
           </div>
-          <h3 className="font-heading text-xl font-semibold leading-tight text-foreground">
-            {bean.name}
+          <h3 className="font-heading text-2xl font-bold leading-tight text-[#3C322B]">
+            {cleanedName}
           </h3>
+          <p className="text-xs font-semibold text-muted-foreground/80 font-sans">
+            {brand}
+          </p>
         </div>
-
-        <p className="text-sm leading-relaxed text-muted-foreground">
-          {bean.blurb}
-        </p>
 
         <div className="flex flex-wrap gap-1.5">
           {bean.flavors.map((f) => (
@@ -508,31 +442,34 @@ export function BeanCard({ bean }: { bean: Bean }) {
           ))}
         </div>
 
-        <div className="grid grid-cols-3 gap-3 pt-1">
-          <Meter label="Acidity" value={bean.acidity} />
-          <Meter label="Body" value={bean.body} />
-          <Meter label="Sweet" value={bean.sweetness} />
-        </div>
-
         <div className="mt-auto flex items-center justify-between border-t border-border pt-4">
-          <div className="flex flex-wrap gap-1">
-            {bean.purposes.slice(0, 2).map((p) => (
-              <span
-                key={p}
-                className="rounded-full border border-border px-2 py-0.5 text-[11px] font-semibold text-muted-foreground"
-              >
-                {p}
-              </span>
-            ))}
-            {bean.purposes.length > 2 && (
-              <span className="rounded-full border border-border px-2 py-0.5 text-[11px] font-semibold text-muted-foreground">
-                +{bean.purposes.length - 2}
-              </span>
-            )}
+          <div className="flex flex-col gap-1">
+            <div className="flex flex-wrap gap-1">
+              {bean.purposes.slice(0, 2).map((p) => (
+                <span
+                  key={p}
+                  className="rounded-full border border-border px-2 py-0.5 text-[11px] font-semibold text-muted-foreground"
+                >
+                  {p}
+                </span>
+              ))}
+              {bean.purposes.length > 2 && (
+                <span className="rounded-full border border-border px-2 py-0.5 text-[11px] font-semibold text-muted-foreground">
+                  +{bean.purposes.length - 2}
+                </span>
+              )}
+            </div>
           </div>
-          <span className="font-heading text-lg font-semibold text-primary">
-            ${bean.price}
-          </span>
+          {bean.url ? (
+            <a
+              href={bean.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="rounded-full bg-secondary px-3 py-1.5 text-xs font-semibold text-foreground hover:bg-primary hover:text-primary-foreground transition-colors"
+            >
+              Buy Beans
+            </a>
+          ) : null}
         </div>
       </div>
     </article>
@@ -540,26 +477,9 @@ export function BeanCard({ bean }: { bean: Bean }) {
 }
 
 export type Filters = {
-  region: string | null
+  regions: string[]
   flavors: string[]
   purposes: Purpose[]
-}
-
-function FilterGroup({
-  title,
-  children,
-}: {
-  title: string
-  children: React.ReactNode
-}) {
-  return (
-    <div className="flex flex-col gap-3">
-      <h3 className="font-heading text-sm font-semibold uppercase tracking-wide text-foreground">
-        {title}
-      </h3>
-      {children}
-    </div>
-  )
 }
 
 export function BeanFilters({
@@ -571,123 +491,322 @@ export function BeanFilters({
   setFilters: (f: Filters) => void
   total: number
 }) {
-  const toggle = <T,>(list: T[], value: T): T[] =>
-    list.includes(value) ? list.filter((v) => v !== value) : [...list, value]
+  const [isRegionCollapsed, setIsRegionCollapsed] = useState(false)
 
   const hasActive =
-    filters.region || filters.flavors.length > 0 || filters.purposes.length > 0
+    filters.regions.length > 0 || filters.flavors.length > 0 || filters.purposes.length > 0
+
+  const toggleRegion = (region: string) => {
+    setFilters({
+      ...filters,
+      regions: filters.regions.includes(region)
+        ? filters.regions.filter((r) => r !== region)
+        : [...filters.regions, region],
+    })
+  }
+
+  const toggleFlavor = (flavor: string) => {
+    setFilters({
+      ...filters,
+      flavors: filters.flavors.includes(flavor)
+        ? filters.flavors.filter((f) => f !== flavor)
+        : [...filters.flavors, flavor],
+    })
+  }
+
+  const togglePurpose = (purpose: Purpose) => {
+    setFilters({
+      ...filters,
+      purposes: filters.purposes.includes(purpose)
+        ? filters.purposes.filter((p) => p !== purpose)
+        : [...filters.purposes, purpose],
+    })
+  }
+
+  // Dot colors for flavor profile groups
+  const groupDots = {
+    nutty: "bg-[#4E3629]", // espresso brown
+    fruity: "bg-[#B33939]", // rich red/burgundy
+    floral: "bg-[#8CA89E]", // soft sage green
+  }
 
   return (
-    <aside className="flex flex-col gap-7 rounded-3xl border border-border bg-card p-6">
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-2">
-          <Coffee className="size-5 text-primary" />
-          <h2 className="font-heading text-lg font-semibold text-foreground">
-            Filters
-          </h2>
-        </div>
-        {hasActive && (
-          <button
-            onClick={() =>
-              setFilters({ region: null, flavors: [], purposes: [] })
-            }
-            className="flex items-center gap-1 rounded-full px-2 py-1 text-xs font-semibold text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground"
-          >
-            <X className="size-3.5" /> Clear
-          </button>
-        )}
+    <aside className="flex flex-col gap-6 rounded-3xl border border-[#EADFD7] bg-white p-6 shadow-xs">
+      {/* Title */}
+      <div className="flex items-center gap-2.5 pb-2">
+        <svg className="size-6 text-[#3C322B]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+          <line x1="4" y1="21" x2="4" y2="14" />
+          <line x1="4" y1="10" x2="4" y2="3" />
+          <line x1="12" y1="21" x2="12" y2="12" />
+          <line x1="12" y1="8" x2="12" y2="3" />
+          <line x1="20" y1="21" x2="20" y2="16" />
+          <line x1="20" y1="12" x2="20" y2="3" />
+          <line x1="1" y1="14" x2="7" y2="14" />
+          <line x1="9" y1="8" x2="15" y2="8" />
+          <line x1="17" y1="16" x2="23" y2="16" />
+        </svg>
+        <h2 className="font-heading text-3xl font-bold text-[#3C322B]">
+          Filters
+        </h2>
       </div>
 
-      <FilterGroup title="Region">
-        <div className="flex flex-col gap-1">
-          {REGIONS.map((region) => {
-            const active = filters.region === region
-            return (
-              <button
-                key={region}
-                onClick={() =>
-                  setFilters({ ...filters, region: active ? null : region })
-                }
-                className={`rounded-xl px-3 py-2 text-left text-sm font-semibold transition-colors ${
-                  active
-                    ? "bg-primary text-primary-foreground"
-                    : "text-muted-foreground hover:bg-secondary hover:text-foreground"
-                }`}
-              >
-                {region}
-              </button>
-            )
-          })}
+      {/* REGION SECTION */}
+      <div className="flex flex-col gap-2">
+        <div
+          className="flex items-center justify-between cursor-pointer select-none py-2"
+          onClick={() => setIsRegionCollapsed(!isRegionCollapsed)}
+        >
+          <h3 className="text-xs font-extrabold uppercase tracking-wider text-[#6B5A50]">
+            Region
+          </h3>
+          <ChevronDown
+            className={cn(
+              "size-4 text-[#6B5A50] transition-transform duration-200",
+              isRegionCollapsed ? "" : "rotate-180"
+            )}
+          />
         </div>
-      </FilterGroup>
-
-      <FilterGroup title="Flavor Notes">
-        <div className="flex flex-wrap gap-2">
-          {ALL_FLAVORS.map((flavor) => {
-            const active = filters.flavors.includes(flavor)
-            return (
-              <button
-                key={flavor}
-                onClick={() =>
-                  setFilters({
-                    ...filters,
-                    flavors: toggle(filters.flavors, flavor),
-                  })
-                }
-                className={`rounded-full px-3 py-1.5 text-xs font-semibold transition-colors ${
-                  active
-                    ? "bg-accent text-accent-foreground"
-                    : "bg-secondary text-secondary-foreground hover:bg-accent/60"
-                }`}
-              >
-                {flavor}
-              </button>
-            )
-          })}
+        <div
+          className={cn(
+            "transition-all duration-200 overflow-hidden",
+            isRegionCollapsed ? "max-h-0 opacity-0" : "opacity-100 mt-1"
+          )}
+        >
+          <div className="flex flex-col gap-2 max-h-52 overflow-y-auto pr-1">
+            {REGIONS.map((region) => {
+              const active = filters.regions.includes(region)
+              return (
+                <label
+                  key={region}
+                  className="flex cursor-pointer items-center gap-3 py-1 text-sm select-none"
+                >
+                  <Checkbox
+                    checked={active}
+                    onCheckedChange={() => toggleRegion(region)}
+                  />
+                  <span className={cn(
+                    "transition-colors text-[#3C322B]",
+                    active ? "font-bold text-neutral-900" : "font-medium text-muted-foreground"
+                  )}>
+                    {region}
+                  </span>
+                </label>
+              )
+            })}
+          </div>
         </div>
-      </FilterGroup>
+      </div>
 
-      <FilterGroup title="Brew Method">
-        <div className="flex flex-col gap-2.5">
+      <hr className="border-t border-[#EADFD7] my-2" />
+
+      {/* FLAVOR PROFILES SECTION */}
+      <div className="flex flex-col gap-3">
+        <h3 className="text-xs font-extrabold uppercase tracking-wider text-[#6B5A50]">
+          Flavor Profiles
+        </h3>
+
+        {/* Nutty & Cocoa */}
+        <div className="flex flex-col gap-2">
+          <div className="flex items-center gap-2 text-xs font-bold text-[#3C322B] mt-1">
+            <span className={cn("size-2.5 rounded-full", groupDots.nutty)} />
+            Nutty & Cocoa
+          </div>
+          <div className="flex flex-wrap gap-1.5">
+            {["Chocolate", "Caramel", "Nutty", "Earthy"].map((flavor) => {
+              const active = filters.flavors.includes(flavor)
+              return (
+                <button
+                  key={flavor}
+                  onClick={() => toggleFlavor(flavor)}
+                  className={cn(
+                    "rounded-full px-3 py-1.5 text-xs font-semibold border transition-all cursor-pointer",
+                    active
+                      ? "bg-[#22150D] text-white border-transparent"
+                      : "bg-white hover:bg-neutral-50/50 text-[#3C322B] border-[#E2D8D0]"
+                  )}
+                >
+                  {flavor}
+                </button>
+              )
+            })}
+          </div>
+        </div>
+
+        {/* Fruity */}
+        <div className="flex flex-col gap-2">
+          <div className="flex items-center gap-2 text-xs font-bold text-[#3C322B] mt-2">
+            <span className={cn("size-2.5 rounded-full", groupDots.fruity)} />
+            Fruity
+          </div>
+          <div className="flex flex-wrap gap-1.5">
+            {["Citrus", "Stone Fruit", "Berry"].map((flavor) => {
+              const active = filters.flavors.includes(flavor)
+              return (
+                <button
+                  key={flavor}
+                  onClick={() => toggleFlavor(flavor)}
+                  className={cn(
+                    "rounded-full px-3 py-1.5 text-xs font-semibold border transition-all cursor-pointer",
+                    active
+                      ? "bg-[#22150D] text-white border-transparent"
+                      : "bg-white hover:bg-neutral-50/50 text-[#3C322B] border-[#E2D8D0]"
+                  )}
+                >
+                  {flavor}
+                </button>
+              )
+            })}
+          </div>
+        </div>
+
+        {/* Floral & Sweet */}
+        <div className="flex flex-col gap-2">
+          <div className="flex items-center gap-2 text-xs font-bold text-[#3C322B] mt-2">
+            <span className={cn("size-2.5 rounded-full", groupDots.floral)} />
+            Floral & Sweet
+          </div>
+          <div className="flex flex-wrap gap-1.5">
+            {["Floral", "Honey", "Spice"].map((flavor) => {
+              const active = filters.flavors.includes(flavor)
+              return (
+                <button
+                  key={flavor}
+                  onClick={() => toggleFlavor(flavor)}
+                  className={cn(
+                    "rounded-full px-3 py-1.5 text-xs font-semibold border transition-all cursor-pointer",
+                    active
+                      ? "bg-[#22150D] text-white border-transparent"
+                      : "bg-white hover:bg-neutral-50/50 text-[#3C322B] border-[#E2D8D0]"
+                  )}
+                >
+                  {flavor}
+                </button>
+              )
+            })}
+          </div>
+        </div>
+      </div>
+
+      <hr className="border-t border-[#EADFD7] my-2" />
+
+      {/* BREW METHOD SECTION */}
+      <div className="flex flex-col gap-2.5">
+        <h3 className="text-xs font-extrabold uppercase tracking-wider text-[#6B5A50]">
+          Brew Method
+        </h3>
+        <div className="flex flex-col gap-2.5 mt-1">
           {ALL_PURPOSES.map((purpose) => {
             const active = filters.purposes.includes(purpose)
+
+            let iconSvg = null
+            if (purpose === "Espresso") {
+              iconSvg = (
+                <svg className={cn("size-5 transition-colors", active ? "text-[#22150D]" : "text-muted-foreground")} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                  <line x1="6" y1="12" x2="18" y2="12" />
+                  <line x1="8" y1="8" x2="16" y2="8" />
+                  <line x1="8" y1="16" x2="16" y2="16" />
+                  <path d="M12 5v14" />
+                  <path d="M10 5h4" />
+                  <path d="M10 19h4" />
+                </svg>
+              )
+            } else if (purpose === "Pour Over") {
+              iconSvg = (
+                <svg className={cn("size-5 transition-colors", active ? "text-[#22150D]" : "text-muted-foreground")} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M6 6h12l-3 9H9z" />
+                  <path d="M5 18h14" />
+                  <path d="M18 8a2 2 0 0 1 0 4" />
+                  <path d="M12 15v1" />
+                </svg>
+              )
+            } else if (purpose === "Cold Brew") {
+              iconSvg = (
+                <svg className={cn("size-5 transition-colors", active ? "text-[#22150D]" : "text-muted-foreground")} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                  <circle cx="12" cy="13" r="7" />
+                  <path d="M12 9v4l2.5 2.5" />
+                  <path d="M12 2v2" />
+                  <path d="M10 2h4" />
+                  <path d="M19 6l-1.5 1.5" />
+                </svg>
+              )
+            } else if (purpose === "Drip") {
+              iconSvg = (
+                <svg className={cn("size-5 transition-colors", active ? "text-[#22150D]" : "text-muted-foreground")} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M6 3h12a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z" />
+                  <path d="M6 8h12" />
+                  <path d="M14 12a2 2 0 1 1-4 0v-1h4v1z" />
+                  <circle cx="12" cy="16" r="1" />
+                </svg>
+              )
+            } else if (purpose === "French Press") {
+              iconSvg = (
+                <svg className={cn("size-5 transition-colors", active ? "text-[#22150D]" : "text-muted-foreground")} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M7 5h10v14a2 2 0 0 1-2 2H9a2 2 0 0 1-2-2V5z" />
+                  <path d="M7 8H5v8h2" />
+                  <path d="M12 2v3" />
+                  <path d="M9 5h6" />
+                  <circle cx="12" cy="2" r="1" />
+                  <path d="M8 12h8" />
+                </svg>
+              )
+            }
+
             return (
-              <label
+              <div
                 key={purpose}
-                className="flex cursor-pointer items-center gap-3 text-sm font-semibold text-muted-foreground"
+                onClick={() => togglePurpose(purpose)}
+                className={cn(
+                  "w-full p-3.5 px-4 rounded-2xl flex items-center justify-between cursor-pointer border transition-all select-none bg-[#FAF5F0]/30 hover:bg-[#F3ECE5]/50 border-[#EADFD7] text-[#3C322B]",
+                  active && "bg-[#FAF5F0] border-neutral-900 text-neutral-900 shadow-xs font-bold"
+                )}
               >
-                <Checkbox
-                  checked={active}
-                  onCheckedChange={() =>
-                    setFilters({
-                      ...filters,
-                      purposes: toggle(filters.purposes, purpose),
-                    })
-                  }
-                />
-                {purpose}
-              </label>
+                <div className="flex items-center gap-3.5">
+                  {iconSvg}
+                  <span className="text-sm font-semibold tracking-tight">{purpose}</span>
+                </div>
+                <div className={cn(
+                  "size-4.5 rounded-[5px] border flex items-center justify-center transition-colors shrink-0",
+                  active
+                    ? "bg-neutral-900 border-neutral-900 text-white"
+                    : "border-[#C5B7AE] bg-transparent"
+                )}>
+                  {active && <CheckIcon className="size-3 stroke-[3]" />}
+                </div>
+              </div>
             )
           })}
         </div>
-      </FilterGroup>
+      </div>
 
-      <p className="rounded-2xl bg-secondary px-4 py-3 text-center text-sm font-semibold text-secondary-foreground">
-        {total} {total === 1 ? "bean" : "beans"} found
-      </p>
+      <hr className="border-t border-[#EADFD7] my-2" />
+
+      {/* Clear Filters Button */}
+      <button
+        onClick={() => setFilters({ regions: [], flavors: [], purposes: [] })}
+        className="w-full flex items-center justify-center gap-2 rounded-2xl bg-[#EFE9E4] hover:bg-[#E5DCD6] py-3.5 text-xs font-bold uppercase tracking-wider text-[#3C322B] transition-colors cursor-pointer"
+      >
+        Clear Filters
+        <X className="size-4" />
+      </button>
     </aside>
   )
 }
+
 
 // ==========================================
 // Bean Explorer Component
 // ==========================================
 
-export function BeanExplorer() {
-  const [query, setQuery] = useState("")
+export function BeanExplorer({
+  query,
+  setQuery,
+}: {
+  query: string
+  setQuery: (q: string) => void
+}) {
   const [showFilters, setShowFilters] = useState(false)
   const [filters, setFilters] = useState<Filters>({
-    region: null,
+    regions: [],
     flavors: [],
     purposes: [],
   })
@@ -695,17 +814,26 @@ export function BeanExplorer() {
   const results = useMemo(() => {
     const q = query.trim().toLowerCase()
     return beans.filter((bean) => {
-      if (filters.region && bean.country !== filters.region) return false
+      // 1. Region Filter
+      if (filters.regions.length > 0) {
+        if (!filters.regions.includes(bean.country)) return false
+      }
+
+      // 2. Flavor Filter
       if (
         filters.flavors.length > 0 &&
         !filters.flavors.every((f) => bean.flavors.includes(f))
       )
         return false
+
+      // 3. Brew Method Filter
       if (
         filters.purposes.length > 0 &&
         !filters.purposes.some((p) => bean.purposes.includes(p))
       )
         return false
+
+      // 4. Search text filter
       if (q) {
         const haystack = [
           bean.name,
@@ -755,9 +883,9 @@ export function BeanExplorer() {
         </button>
       </div>
 
-      <div className="grid grid-cols-1 gap-8 lg:grid-cols-[260px_1fr]">
+      <div className="grid grid-cols-1 gap-8 lg:grid-cols-[280px_1fr]">
         <div className={`${showFilters ? "block" : "hidden"} lg:block`}>
-          <div className="lg:sticky lg:top-6">
+          <div className="lg:sticky lg:top-24 max-h-[calc(100vh-120px)] overflow-y-auto pr-2">
             <BeanFilters
               filters={filters}
               setFilters={setFilters}
@@ -794,12 +922,14 @@ export function BeanExplorer() {
 // ==========================================
 
 export default function Page() {
+  const [query, setQuery] = useState("")
+
   return (
-    <main className="min-h-screen bg-background">
-      <SiteHeader />
+    <main className="min-h-screen bg-[#FCF8F5] text-foreground">
+      <SiteHeader searchQuery={query} setSearchQuery={setQuery} placeholder="Search beans..." />
       <Hero />
       <HowItWorks />
-      <BeanExplorer />
+      <BeanExplorer query={query} setQuery={setQuery} />
       <SiteFooter />
     </main>
   )
