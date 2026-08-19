@@ -34,6 +34,8 @@ export interface Bean {
   weight?: string
   variety?: string
   process?: ProcessMethod | string
+  altitude?: string
+  variants?: { weight: string; price: number }[]
   rating: number
   blurb: string
   url?: string

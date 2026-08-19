@@ -131,6 +131,8 @@ export async function createBean(data: BeanFormData): Promise<Bean> {
     weight: data.weight?.trim() || "250g",
     variety: data.variety?.trim() || "",
     process: data.process?.trim() || "Washed",
+    altitude: data.altitude?.trim() || "1,200m - 1,500m",
+    variants: Array.isArray(data.variants) ? data.variants : [],
     rating: Number(data.rating) || 4.5,
     blurb: data.blurb?.trim() || "",
     url: data.url?.trim() || "",
@@ -179,6 +181,8 @@ export async function updateBean(id: string, data: Partial<BeanFormData>): Promi
     weight: data.weight !== undefined ? data.weight.trim() : existing.weight,
     variety: data.variety !== undefined ? data.variety.trim() : existing.variety,
     process: data.process !== undefined ? data.process.trim() : existing.process,
+    altitude: data.altitude !== undefined ? data.altitude.trim() : existing.altitude,
+    variants: data.variants !== undefined ? data.variants : existing.variants,
     rating: data.rating !== undefined ? Number(data.rating) : existing.rating,
     blurb: data.blurb !== undefined ? data.blurb.trim() : existing.blurb,
     url: data.url !== undefined ? data.url.trim() : existing.url,
@@ -243,5 +247,243 @@ export async function getAdminStats(): Promise<AdminStats> {
     outOfStockCount: outOfStock,
     featuredCount: featured,
     averagePrice,
+  }
+}
+
+export interface BatchImportResultItem {
+  rowNumber: number
+  beanName: string
+  roaster: string
+  action: "created" | "updated" | "skipped" | "failed"
+  beanId?: string
+  reason?: string
+}
+
+export interface BatchImportResult {
+  totalRows: number
+  createdCount: number
+  updatedCount: number
+  skippedCount: number
+  failedCount: number
+  items: BatchImportResultItem[]
+}
+
+/**
+ * Batch create or update beans atomically
+ */
+export async function batchUpsertBeans(
+  itemsToImport: {
+    rowNumber: number
+    data: {
+      externalId?: string
+      roaster: string
+      retailerId: string
+      name: string
+      productUrl: string
+      affiliateUrl?: string
+      affiliateNetwork?: string
+      merchantId?: string
+      image?: string
+      price: number
+      currency: string
+      bagSizeG: number
+      weight: string
+      country: string
+      region: string
+      process: string
+      roast: any
+      purposes: any[]
+      flavors: string[]
+      isDecaf: boolean
+      inStock: boolean
+      featured: boolean
+      active: boolean
+      adminNotes?: string
+    }
+  }[],
+  duplicateMode: "skip" | "update" = "skip"
+): Promise<BatchImportResult> {
+  const all = await readBeansFromFile()
+  const resultItems: BatchImportResultItem[] = []
+  let createdCount = 0
+  let updatedCount = 0
+  let skippedCount = 0
+  let failedCount = 0
+
+  const now = new Date().toISOString()
+  const workingBeans = [...all]
+
+  function getCanonical(url?: string) {
+    if (!url) return ""
+    try {
+      const u = new URL(url.trim().toLowerCase())
+      return `${u.hostname}${u.pathname}`.replace(/\/+$/, "")
+    } catch {
+      return url.trim().toLowerCase().replace(/^https?:\/\//, "").replace(/\/+$/, "")
+    }
+  }
+
+  for (const item of itemsToImport) {
+    const { rowNumber, data } = item
+    try {
+      // Find existing match
+      let matchIndex = -1
+
+      // 1. Match by externalId
+      if (data.externalId) {
+        matchIndex = workingBeans.findIndex(
+          (b) => b.id === data.externalId || b.merchantId === data.externalId
+        )
+      }
+
+      // 2. Match by canonical product URL
+      if (matchIndex === -1 && data.productUrl) {
+        const targetCanon = getCanonical(data.productUrl)
+        matchIndex = workingBeans.findIndex((b) => b.url && getCanonical(b.url) === targetCanon)
+      }
+
+      // 3. Match by roaster + name
+      if (matchIndex === -1 && data.roaster && data.name) {
+        const rLower = data.roaster.toLowerCase()
+        const nLower = data.name.toLowerCase()
+        matchIndex = workingBeans.findIndex(
+          (b) =>
+            b.roaster.toLowerCase() === rLower &&
+            (b.name.toLowerCase() === nLower ||
+              b.name.toLowerCase().includes(nLower) ||
+              nLower.includes(b.name.toLowerCase()))
+        )
+      }
+
+      // Duplicate Handling
+      if (matchIndex !== -1) {
+        const existing = workingBeans[matchIndex]
+        if (duplicateMode === "skip") {
+          skippedCount++
+          resultItems.push({
+            rowNumber,
+            beanName: data.name,
+            roaster: data.roaster,
+            action: "skipped",
+            beanId: existing.id,
+            reason: `Duplicate of "${existing.name}" (Skipped as per duplicate setting)`,
+          })
+          continue
+        } else {
+          // Update mode
+          const updatedBean: Bean = {
+            ...existing,
+            name: data.name.trim(),
+            roaster: data.roaster.trim(),
+            country: data.country ? data.country.trim() : existing.country,
+            region: data.region ? data.region.trim() : existing.region,
+            image: data.image ? data.image.trim() : existing.image,
+            roast: data.roast || existing.roast,
+            flavors: data.flavors && data.flavors.length > 0 ? data.flavors : existing.flavors,
+            purposes: data.purposes && data.purposes.length > 0 ? data.purposes : existing.purposes,
+            price: typeof data.price === "number" ? data.price : existing.price,
+            currency: data.currency || existing.currency,
+            weight: data.weight || existing.weight,
+            process: data.process || existing.process,
+            url: data.productUrl || existing.url,
+            inStock: typeof data.inStock === "boolean" ? data.inStock : existing.inStock,
+            featured: typeof data.featured === "boolean" ? data.featured : existing.featured,
+            retailerId: data.retailerId || existing.retailerId,
+            affiliateUrl: data.affiliateUrl || existing.affiliateUrl,
+            affiliateNetwork: data.affiliateNetwork || existing.affiliateNetwork,
+            merchantId: data.merchantId || existing.merchantId,
+            blurb: data.adminNotes || existing.blurb,
+            updatedAt: now,
+          }
+          workingBeans[matchIndex] = updatedBean
+          updatedCount++
+          resultItems.push({
+            rowNumber,
+            beanName: updatedBean.name,
+            roaster: updatedBean.roaster,
+            action: "updated",
+            beanId: updatedBean.id,
+            reason: "Successfully updated existing coffee bean record",
+          })
+          continue
+        }
+      }
+
+      // Create new bean
+      let candidateId = data.externalId ? generateBeanId(data.roaster, data.externalId) : generateBeanId(data.roaster, data.name)
+      let finalId = candidateId
+      let counter = 1
+      while (workingBeans.some((b) => b.id === finalId)) {
+        finalId = `${candidateId}-${counter}`
+        counter++
+      }
+
+      const newBean: Bean = {
+        id: finalId,
+        name: data.name.trim(),
+        roaster: data.roaster.trim(),
+        country: data.country?.trim() || "Single Origin",
+        region: data.region?.trim() || "",
+        image: data.image?.trim() || "",
+        roast: data.roast || "Medium",
+        flavors: Array.isArray(data.flavors) && data.flavors.length > 0 ? data.flavors : ["Chocolate", "Nutty"],
+        purposes: Array.isArray(data.purposes) && data.purposes.length > 0 ? data.purposes : ["Espresso", "Pour Over", "Drip"],
+        acidity: 3,
+        body: 3,
+        sweetness: 3,
+        price: Number(data.price) || 0,
+        currency: data.currency || "GBP",
+        weight: data.weight?.trim() || "250g",
+        variety: "",
+        process: data.process?.trim() || "Washed",
+        altitude: "1,200m - 1,600m",
+        variants: [],
+        rating: 4.5,
+        blurb:
+          data.adminNotes?.trim() ||
+          `${data.roast || "Medium"} roast specialty coffee from ${data.country || "Single Origin"} by ${data.roaster}.`,
+        url: data.productUrl?.trim() || "",
+        inStock: typeof data.inStock === "boolean" ? data.inStock : true,
+        featured: typeof data.featured === "boolean" ? data.featured : false,
+        retailerId: data.retailerId?.trim() || "",
+        affiliateUrl: data.affiliateUrl?.trim() || "",
+        affiliateNetwork: data.affiliateNetwork?.trim() || "",
+        merchantId: data.merchantId?.trim() || "",
+        createdAt: now,
+        updatedAt: now,
+      }
+
+      workingBeans.unshift(newBean)
+      createdCount++
+      resultItems.push({
+        rowNumber,
+        beanName: newBean.name,
+        roaster: newBean.roaster,
+        action: "created",
+        beanId: newBean.id,
+        reason: "Successfully created new coffee bean record",
+      })
+    } catch (err: any) {
+      failedCount++
+      resultItems.push({
+        rowNumber,
+        beanName: data.name || "Unknown",
+        roaster: data.roaster || "Unknown",
+        action: "failed",
+        reason: err.message || "Failed to process row",
+      })
+    }
+  }
+
+  // Atomically write updated beans list
+  await writeBeansToFile(workingBeans)
+
+  return {
+    totalRows: itemsToImport.length,
+    createdCount,
+    updatedCount,
+    skippedCount,
+    failedCount,
+    items: resultItems,
   }
 }

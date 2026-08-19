@@ -17,15 +17,13 @@ import {
   X,
   Check as CheckIcon,
   ChevronDown,
+  ChevronUp,
   Bookmark,
-  User
+  User,
+  Info
 } from "lucide-react"
 import { Checkbox as CheckboxPrimitive } from "@base-ui/react/checkbox"
 import { cn } from "@/lib/utils"
-
-// ==========================================
-// Types & Data Model (Centralized)
-// ==========================================
 
 import {
   type Purpose,
@@ -37,12 +35,6 @@ import {
 import initialBeans from "@/data/beans.json"
 
 export type { Purpose, Roast, Bean }
-export { ALL_FLAVORS, ALL_PURPOSES }
-
-export const beans: Bean[] = initialBeans as Bean[]
-
-
-export const REGIONS = Array.from(new Set(beans.map((b) => b.country))).sort()
 
 // ==========================================
 // Custom UI Components (Inlined)
@@ -53,7 +45,7 @@ function Checkbox({ className, ...props }: CheckboxPrimitive.Root.Props) {
     <CheckboxPrimitive.Root
       data-slot="checkbox"
       className={cn(
-        "peer relative flex size-4 shrink-0 items-center justify-center rounded-[4px] border border-input transition-colors outline-none group-has-disabled/field:opacity-50 after:absolute after:-inset-x-3 after:-inset-y-2 focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 disabled:cursor-not-allowed disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-3 aria-invalid:ring-destructive/20 aria-invalid:aria-checked:border-primary dark:bg-input/30 dark:aria-invalid:border-destructive/50 dark:aria-invalid:ring-destructive/40 data-checked:border-primary data-checked:bg-primary data-checked:text-primary-foreground dark:data-checked:bg-primary",
+        "peer relative flex size-4 shrink-0 items-center justify-center rounded-[4px] border border-input transition-colors outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 disabled:cursor-not-allowed disabled:opacity-50 data-checked:border-primary data-checked:bg-primary data-checked:text-primary-foreground dark:data-checked:bg-primary",
         className
       )}
       {...props}
@@ -72,13 +64,110 @@ function Badge({ className, children }: { className?: string; children: React.Re
   return (
     <span
       className={cn(
-        "group/badge inline-flex h-5 w-fit shrink-0 items-center justify-center gap-1 overflow-hidden rounded-4xl border border-transparent px-2 py-0.5 text-xs font-medium whitespace-nowrap transition-all focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50",
+        "group/badge inline-flex h-5 w-fit shrink-0 items-center justify-center gap-1 overflow-hidden rounded-4xl border border-transparent px-2.5 py-0.5 text-xs font-semibold whitespace-nowrap transition-all focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50",
         className
       )}
     >
       {children}
     </span>
   )
+}
+
+// ==========================================
+// Helper functions
+// ==========================================
+
+function getWeightInGrams(weight?: string): number {
+  if (!weight) return 250
+  const match = weight.match(/(\d+(?:\.\d+)?)\s*(g|kg)/i)
+  if (!match) return 250
+  const num = parseFloat(match[1])
+  const unit = match[2].toLowerCase()
+  if (unit === 'kg') return num * 1000
+  return num
+}
+
+function calculatePricePer100g(price: number, weight?: string): number {
+  const weightG = getWeightInGrams(weight)
+  return (price / weightG) * 100
+}
+
+function getFlavorEmoji(flavor: string): string {
+  const mapping: Record<string, string> = {
+    "Chocolate": "🍫",
+    "Caramel": "🍯",
+    "Nutty": "🥜",
+    "Honey": "🍯",
+    "Floral": "🌸",
+    "Berry": "🍓",
+    "Citrus": "🍋",
+    "Stone Fruit": "🍑",
+    "Spice": "🌶️",
+    "Earthy": "🪵",
+    "Tropical Fruit": "🍍",
+    "Vanilla": "🍦",
+    "Jasmine": "🌸",
+    "Blueberry": "🫐",
+    "Apple": "🍎",
+    "Peach": "🍑"
+  }
+  return mapping[flavor] || "☕"
+}
+
+function getRecommendedUses(bean: Bean): string[] {
+  const uses: string[] = []
+  if (bean.purposes.includes("Espresso")) {
+    uses.push("Espresso")
+  }
+  const hasFilter = bean.purposes.some(p => 
+    ["Pour Over", "Drip", "French Press", "Aeropress", "Moka Pot"].includes(p)
+  )
+  if (hasFilter) {
+    uses.push("Filter")
+  }
+  const suitableForMilk = 
+    bean.roast === "Medium" || 
+    bean.roast === "Medium-Dark" || 
+    bean.roast === "Dark" || 
+    bean.flavors.some(f => ["Chocolate", "Nutty", "Caramel", "Honey"].includes(f)) ||
+    bean.purposes.includes("Espresso");
+  if (suitableForMilk) {
+    uses.push("With Milk")
+  } else {
+    uses.push("Black")
+  }
+  return uses
+}
+
+function getRecommendationBadge(bean: Bean, isBestMatch: boolean): string | null {
+  if (isBestMatch) return "Best Match"
+  const isBeginnerFriendly = 
+    (bean.roast === "Medium" || bean.roast === "Medium-Dark") &&
+    (bean.flavors.includes("Chocolate") || bean.flavors.includes("Nutty") || bean.flavors.includes("Caramel")) &&
+    bean.acidity <= 3;
+  if (isBeginnerFriendly) return "Beginner Friendly"
+  const isEasyChoice = bean.rating >= 4.4 && bean.roast === "Medium";
+  if (isEasyChoice) return "Easy Choice"
+  const isTrySomethingNew = 
+    bean.roast === "Light" || 
+    bean.process === "Anaerobic" || 
+    bean.process === "Natural" || 
+    bean.flavors.includes("Floral") || 
+    bean.flavors.includes("Tropical Fruit") ||
+    bean.flavors.includes("Berry");
+  if (isTrySomethingNew) return "Try Something New"
+  return null
+}
+
+function matchAltitudeRange(altitudeStr?: string, range?: string): boolean {
+  if (!range || !altitudeStr) return true
+  const numMatch = altitudeStr.match(/(\d{1,3}(?:,\d{3})*)/)
+  if (!numMatch) return true
+  const elevation = parseInt(numMatch[1].replace(/,/g, ""), 10)
+  if (range === "low") return elevation < 1200
+  if (range === "mid") return elevation >= 1200 && elevation <= 1600
+  if (range === "high") return elevation > 1600
+  return true
 }
 
 // ==========================================
@@ -103,36 +192,33 @@ export function SiteHeader({
       <div className="mx-auto flex w-full max-w-6xl items-center justify-between px-5 py-4">
         {/* Logo */}
         <Link href="/" className="flex items-center gap-2">
-          <span className="font-heading text-2xl font-bold tracking-tight text-[#333]">
-            Bean Directory
+          <span className="font-heading text-2xl font-bold tracking-tight text-[#3C322B]">
+            ☕ Bean Buddy
           </span>
         </Link>
 
         {/* Navigation */}
         <nav className="hidden items-center gap-8 text-sm font-semibold text-muted-foreground md:flex">
           <Link href="/brands" className={cn(
-            "relative py-1 transition-colors hover:text-foreground",
-            isBrands ? "text-foreground font-bold" : "text-muted-foreground"
+            "relative py-1 transition-colors hover:text-[#3C322B]",
+            isBrands ? "text-[#3C322B] font-bold" : "text-muted-foreground"
           )}>
             Roasters
             {isBrands && (
               <span className="absolute bottom-0 left-0 right-0 h-[2px] bg-primary rounded-full" />
             )}
           </Link>
-          <Link href="/#explore" className="transition-colors hover:text-foreground py-1">
+          <Link href="/#explore" className="transition-colors hover:text-[#3C322B] py-1">
             Origins
           </Link>
-          <Link href="/#explore" className="transition-colors hover:text-foreground py-1">
+          <Link href="/#explore" className="transition-colors hover:text-[#3C322B] py-1">
             Methods
           </Link>
-          <Link href="/#how" className="transition-colors hover:text-foreground py-1">
-            Sustainability
-          </Link>
           <Link href="/contact" className={cn(
-            "relative py-1 transition-colors hover:text-foreground",
-            isContact ? "text-foreground font-bold" : "text-muted-foreground"
+            "relative py-1 transition-colors hover:text-[#3C322B]",
+            isContact ? "text-[#3C322B] font-bold" : "text-muted-foreground"
           )}>
-            聯絡我們
+            Contact
             {isContact && (
               <span className="absolute bottom-0 left-0 right-0 h-[2px] bg-primary rounded-full" />
             )}
@@ -149,7 +235,7 @@ export function SiteHeader({
               value={searchQuery || ""}
               onChange={(e) => setSearchQuery && setSearchQuery(e.target.value)}
               disabled={!setSearchQuery}
-              className="w-full rounded-full border border-border bg-[#FCF8F5]/50 hover:bg-[#FCF8F5] py-2 pl-9 pr-4 text-xs font-semibold text-foreground outline-none transition-colors placeholder:text-muted-foreground focus:border-primary focus:ring-1 focus:ring-primary/20 disabled:cursor-not-allowed"
+              className="w-full rounded-full border border-border bg-[#FCF8F5]/50 hover:bg-[#FCF8F5] py-2 pl-9 pr-4 text-xs font-semibold text-[#3C322B] outline-none transition-colors placeholder:text-muted-foreground focus:border-primary focus:ring-1 focus:ring-primary/20 disabled:cursor-not-allowed"
             />
           </div>
           <button className="p-2 text-muted-foreground hover:text-foreground transition-colors" aria-label="Bookmarks">
@@ -157,7 +243,7 @@ export function SiteHeader({
           </button>
           <Link
             href="/admin"
-            className="p-2 text-muted-foreground hover:text-foreground transition-colors"
+            className="p-2 text-muted-foreground hover:text-[#3C322B] transition-colors"
             aria-label="Admin Portal"
             title="Admin Portal"
           >
@@ -174,42 +260,39 @@ export function SiteFooter() {
     <footer className="border-t border-border bg-[#FCF8F5] py-12">
       <div className="mx-auto flex w-full max-w-6xl flex-col gap-8 px-5 md:flex-row md:justify-between md:items-start">
         <div className="flex flex-col gap-3 max-w-sm">
-          <span className="font-heading text-xl font-bold text-[#333]">
-            Bean Directory
+          <span className="font-heading text-xl font-bold text-[#3C322B]">
+            ☕ Bean Buddy
           </span>
           <p className="text-sm leading-relaxed text-muted-foreground">
-            Elevating the coffee experience through curated discovery and technical precision.
+            Helping normal coffee lovers discover and compare specialty beans without the technical jargon.
           </p>
           <p className="text-xs text-muted-foreground mt-2">
-            © 2024 Bean Directory. Brewed with precision.
+            © 2026 Bean Buddy. Designed with love.
           </p>
         </div>
 
         <div className="flex gap-16">
           <div className="flex flex-col gap-3">
-            <h4 className="text-xs font-bold uppercase tracking-wider text-[#333]">Resources</h4>
+            <h4 className="text-xs font-bold uppercase tracking-wider text-[#3C322B]">Explore</h4>
             <Link href="/#explore" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
-              Brewing Guides
+              Taste Categories
             </Link>
-            <Link href="/#explore" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
-              Roasting Science
+            <Link href="/brands" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+              Roasters
             </Link>
             <Link href="/admin" className="text-sm font-semibold text-primary hover:underline transition-colors">
-              Admin Panel
+              Admin Area
             </Link>
           </div>
 
           <div className="flex flex-col gap-3">
-            <h4 className="text-xs font-bold uppercase tracking-wider text-[#333]">About</h4>
-            <Link href="/#how" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
-              Green Coffee Sourcing
-            </Link>
-            <Link href="/#how" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
-              Accessibility
-            </Link>
+            <h4 className="text-xs font-bold uppercase tracking-wider text-[#3C322B]">About</h4>
             <Link href="/contact" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
-              聯絡我們
+              Contact Us
             </Link>
+            <p className="text-[10px] text-muted-foreground max-w-xs mt-2 italic leading-snug">
+              We may earn an affiliate commission when you click and purchase coffee beans from our roaster links, at no extra cost to you.
+            </p>
           </div>
         </div>
       </div>
@@ -218,63 +301,48 @@ export function SiteFooter() {
 }
 
 // ==========================================
-// Hero & How It Works Components
+// Hero Component
 // ==========================================
 
-export function Hero({ beans }: { beans: Bean[] }) {
+export function Hero() {
   return (
     <section className="mx-auto w-full max-w-6xl px-5 pb-4 pt-12 sm:pt-16">
       <div className="grid grid-cols-1 items-center gap-10 lg:grid-cols-2">
         <div className="flex flex-col gap-6">
-          <span className="inline-flex w-fit items-center gap-2 rounded-full bg-accent px-4 py-1.5 text-sm font-semibold text-accent-foreground">
-            <Sparkles className="size-4" />
-            Compare beans the cozy way
+          <span className="inline-flex w-fit items-center gap-2 rounded-full bg-accent/60 px-4 py-1.5 text-xs font-bold text-accent-foreground">
+            <Sparkles className="size-4 text-amber-700" />
+            Specialty coffee discovery, made simple
           </span>
-          <h1 className="font-heading text-5xl font-semibold leading-[1.05] text-foreground sm:text-6xl text-balance">
-            Find your perfect cup of coffee
+          <h1 className="font-heading text-5xl font-extrabold leading-[1.05] text-[#3C322B] sm:text-6xl text-balance">
+            Find coffee that fits your taste
           </h1>
-          <p className="max-w-md text-pretty text-lg leading-relaxed text-muted-foreground">
-            Browse specialty beans from around the world and compare them by
-            region, flavor notes, and how you like to brew. Simple, sweet, and
-            made for coffee lovers.
+          <p className="max-w-md text-pretty text-base sm:text-lg leading-relaxed text-muted-foreground">
+            No technical snobbery here. Browse delicious beans based on what you actually like—from comforting chocolatey notes to bright and fruity vibes.
           </p>
           <div className="flex flex-wrap gap-3">
             <a
               href="#explore"
-              className="rounded-full bg-primary px-6 py-3 text-sm font-semibold text-primary-foreground transition-colors hover:bg-primary/90"
+              className="rounded-full bg-primary px-6 py-3 text-sm font-bold text-primary-foreground transition-all hover:bg-primary/95 shadow-sm hover:translate-y-[-1px]"
             >
-              Explore beans
+              Start Discovering
             </a>
             <a
-              href="#how"
-              className="rounded-full border border-border bg-card px-6 py-3 text-sm font-semibold text-foreground transition-colors hover:bg-secondary"
+              href="#explore"
+              className="rounded-full border border-border bg-card px-6 py-3 text-sm font-bold text-neutral-700 transition-all hover:bg-neutral-50"
             >
-              How it works
+              Browse All Beans
             </a>
-          </div>
-          <div className="flex flex-wrap gap-6 pt-2">
-            <Stat icon={<Coffee className="size-4" />} value={beans.length.toString()} label="Beans" />
-            <Stat
-              icon={<Globe className="size-4" />}
-              value={new Set(beans.map((b) => b.country)).size.toString()}
-              label="Origins"
-            />
-            <Stat
-              icon={<Sparkles className="size-4" />}
-              value={ALL_FLAVORS.length.toString()}
-              label="Flavor notes"
-            />
           </div>
         </div>
 
         <div className="relative">
-          <div className="overflow-hidden rounded-[2rem] border border-border bg-card">
+          <div className="overflow-hidden rounded-[2rem] border border-[#EADFD7] bg-white p-3 shadow-xs">
             <Image
               src="/hero-beans.png"
-              alt="Roasted coffee beans and a cup of coffee on a beige linen surface"
+              alt="Roasted coffee beans on a cozy natural wooden plate"
               width={720}
               height={620}
-              className="h-full w-full object-cover"
+              className="h-full w-full object-cover rounded-[1.8rem]"
               priority
             />
           </div>
@@ -284,131 +352,33 @@ export function Hero({ beans }: { beans: Bean[] }) {
   )
 }
 
-function Stat({
-  icon,
-  value,
-  label,
-}: {
-  icon: React.ReactNode
-  value: string
-  label: string
-}) {
-  return (
-    <div className="flex flex-col gap-1">
-      <span className="flex items-center gap-1.5 font-heading text-2xl font-semibold text-foreground">
-        <span className="text-primary">{icon}</span>
-        {value}
-      </span>
-      <span className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-        {label}
-      </span>
-    </div>
-  )
-}
-
-const steps = [
-  {
-    icon: MapPin,
-    title: "Pick a region",
-    body: "Explore single-origin beans from Ethiopia to Sumatra and everywhere in between.",
-  },
-  {
-    icon: Heart,
-    title: "Choose your flavors",
-    body: "Love it fruity, chocolatey, or floral? Filter by the notes you crave most.",
-  },
-  {
-    icon: FlaskConical,
-    title: "Match your brew",
-    body: "Espresso, pour over, or cold brew — find beans that shine your way.",
-  },
-]
-
-export function HowItWorks() {
-  return (
-    <section id="how" className="bg-secondary/50">
-      <div className="mx-auto w-full max-w-6xl px-5 py-16">
-        <div className="mb-10 flex flex-col gap-3 text-center">
-          <h2 className="font-heading text-3xl font-semibold text-foreground sm:text-4xl text-balance">
-            How it works
-          </h2>
-          <p className="mx-auto max-w-md text-pretty leading-relaxed text-muted-foreground">
-            Three little steps to your next favorite bag of beans.
-          </p>
-        </div>
-        <div className="grid grid-cols-1 gap-6 sm:grid-cols-3">
-          {steps.map((step, i) => (
-            <div
-              key={step.title}
-              className="flex flex-col items-center gap-4 rounded-3xl border border-border bg-card p-8 text-center"
-            >
-              <span className="flex size-14 items-center justify-center rounded-2xl bg-accent text-accent-foreground">
-                <step.icon className="size-7" />
-              </span>
-              <span className="font-heading text-sm font-semibold text-primary">
-                Step {i + 1}
-              </span>
-              <h3 className="font-heading text-xl font-semibold text-foreground">
-                {step.title}
-              </h3>
-              <p className="text-sm leading-relaxed text-muted-foreground">
-                {step.body}
-              </p>
-            </div>
-          ))}
-        </div>
-      </div>
-    </section>
-  )
-}
-
 // ==========================================
-// Bean Card & Filter Components
+// Bean Card Component
 // ==========================================
 
 export function BeanCard({
   bean,
   query = "",
-  filters = { regions: [], flavors: [], purposes: [] },
+  filters = {},
+  isBestMatch = false
 }: {
   bean: Bean
   query?: string
-  filters?: Filters
+  filters?: any
+  isBestMatch?: boolean
 }) {
-  const { brand, name: cleanedName } = useMemo(() => {
-    if (bean.roaster) {
-      let name = bean.name
-      // If name starts with roaster prefix, clean it
-      if (name.startsWith(`${bean.roaster} - `)) {
-        name = name.replace(`${bean.roaster} - `, "")
-      }
-      return { brand: bean.roaster, name }
+  const cleanedName = useMemo(() => {
+    let name = bean.name
+    if (bean.roaster && name.startsWith(`${bean.roaster} - `)) {
+      name = name.replace(`${bean.roaster} - `, "")
     }
-    const parts = bean.name.split(" - ")
-    const brand = parts[0]
-    let name = parts.slice(1).join(" - ")
-    
-    // Clean up parenthesis if any (like Monmouth's " (Finca Santa Catalina)")
-    name = name.replace(/^\s*\((.*)\)\s*$/, '$1').trim()
-    
     // Strip country suffix (e.g. ", Brazil" or ", Colombia" or ", Ethiopia")
     const countrySuffixReg = new RegExp(`,\\s*${bean.country}\\s*$`, 'i')
     name = name.replace(countrySuffixReg, '').trim()
-    
-    // Strip "The Baron: ", "The Estate: ", etc.
+    // Strip "The Baron: ", "The Estate: ", etc. if too wordy
     name = name.replace(/^(The Baron:\s*|The Estate:\s*|The Fields:\s*|Decaf:\s*)/i, '').trim()
-    
-    return { brand, name }
+    return name
   }, [bean.name, bean.country, bean.roaster])
-
-  const locationText = useMemo(() => {
-    const loc = bean.region
-      ? bean.region.toLowerCase().includes(bean.country.toLowerCase())
-        ? bean.region
-        : `${bean.region}, ${bean.country}`
-      : bean.country
-    return loc.toUpperCase()
-  }, [bean.region, bean.country])
 
   const trackingUrl = useMemo(() => {
     if (typeof window === "undefined") return `/go/${bean.id}`
@@ -420,402 +390,132 @@ export function BeanCard({
     return `/go/${bean.id}?${params.toString()}`
   }, [bean.id, query, filters])
 
+  const badge = useMemo(() => getRecommendationBadge(bean, isBestMatch), [bean, isBestMatch])
+  const recommendedUses = useMemo(() => getRecommendedUses(bean), [bean])
+  const pricePer100g = useMemo(() => calculatePricePer100g(bean.price, bean.weight), [bean.price, bean.weight])
+
   return (
-    <article className="group flex flex-col overflow-hidden rounded-3xl border border-[#EADFD7] bg-white transition-all hover:-translate-y-1 hover:shadow-[0_18px_40px_-22px_rgba(120,80,40,0.45)]">
-      <div className="relative aspect-[4/3] overflow-hidden bg-secondary">
-        <Image
-          src={bean.image || "/placeholder.svg"}
-          alt={`${bean.name} coffee beans from ${bean.country}`}
-          fill
-          sizes="(max-width: 768px) 100vw, 33vw"
-          className="object-cover transition-transform duration-500 group-hover:scale-105"
-        />
-        <Badge className="absolute right-3 top-3 rounded-full bg-accent text-accent-foreground hover:bg-accent">
-          {bean.roast}
-        </Badge>
-      </div>
-
-      <div className="flex flex-1 flex-col gap-4 p-5">
-        <div className="flex flex-col gap-1.5">
-          <div className="flex items-center gap-1 text-[10px] font-bold tracking-wider text-muted-foreground/80 uppercase">
-            <MapPin className="size-3.5 text-primary/70" />
-            {locationText}
+    <article className="group flex flex-col overflow-hidden rounded-3xl border border-[#EADFD7] bg-white transition-all hover:-translate-y-1 hover:shadow-[0_18px_40px_-22px_rgba(120,80,40,0.35)]">
+      {/* Visual Header clickable to Detail page */}
+      <Link href={`/beans/${bean.id}`} className="block flex-1 relative">
+        <div className="relative aspect-[4/3] overflow-hidden bg-secondary">
+          <Image
+            src={bean.image || "/placeholder.svg"}
+            alt={`${bean.name} coffee beans from ${bean.country}`}
+            fill
+            sizes="(max-width: 768px) 100vw, 33vw"
+            className="object-cover transition-transform duration-500 group-hover:scale-105"
+          />
+          
+          {/* Dynamic Badges */}
+          <div className="absolute left-3 top-3 flex flex-col gap-1.5 items-start">
+            {badge && (
+              <span className={cn(
+                "rounded-full text-[9px] font-extrabold px-2.5 py-1 uppercase tracking-wider shadow-sm text-white",
+                badge === "Best Match" ? "bg-amber-800" :
+                badge === "Beginner Friendly" ? "bg-emerald-700" :
+                badge === "Easy Choice" ? "bg-blue-700" : "bg-purple-700"
+              )}>
+                {badge}
+              </span>
+            )}
           </div>
-          <h3 className="font-heading text-2xl font-bold leading-tight text-[#3C322B]">
-            {cleanedName}
-          </h3>
-          <p className="text-xs font-semibold text-muted-foreground/80 font-sans">
-            {brand}
-          </p>
+          
+          <span className="absolute right-3 top-3 rounded-full bg-white/90 backdrop-blur px-2.5 py-1 text-[9px] font-bold text-neutral-800 shadow-sm border border-neutral-200/50 uppercase tracking-wide">
+            {bean.roast} Roast
+          </span>
         </div>
 
-        <div className="flex flex-wrap gap-1.5">
-          {bean.flavors.map((f) => (
-            <span
-              key={f}
-              className="rounded-full bg-secondary px-2.5 py-1 text-xs font-semibold text-secondary-foreground"
-            >
-              {f}
+        {/* Content Details */}
+        <div className="flex flex-col gap-3 p-5">
+          <div className="flex flex-col gap-0.5">
+            <span className="text-[10px] font-extrabold tracking-wider text-muted-foreground/80 uppercase">
+              {bean.roaster}
             </span>
-          ))}
+            <h3 className="font-heading text-xl font-bold leading-snug text-[#3C322B] group-hover:text-primary transition-colors line-clamp-1">
+              {cleanedName}
+            </h3>
+          </div>
+
+          {/* Simple Taste Notes */}
+          <div className="flex flex-wrap items-center gap-1.5 text-xs font-bold text-[#5c4a3e]">
+            {bean.flavors.map((f, i) => (
+              <span key={f} className="inline-flex items-center bg-secondary/40 rounded-full px-2 py-0.5 text-[11px]">
+                <span className="mr-1">{getFlavorEmoji(f)}</span> {f}
+              </span>
+            ))}
+          </div>
+
+          {/* Short beginner friendly description */}
+          <p className="text-xs text-muted-foreground leading-relaxed line-clamp-2">
+            {bean.blurb}
+          </p>
+
+          {/* Recommended Brew */}
+          <div className="text-[11px] font-bold text-[#6D5A50] bg-[#FAF8F5] border border-[#EADFD7]/60 rounded-xl p-2 px-3 w-fit mt-1">
+            Best for: <span className="text-[#3C322B] font-extrabold">{recommendedUses.join(" · ")}</span>
+          </div>
+        </div>
+      </Link>
+
+      {/* Pricing & CTA Section */}
+      <div className="p-5 pt-0 border-t border-dashed border-[#EADFD7]/50 mt-auto">
+        <div className="mt-4 flex items-end justify-between">
+          <div className="flex flex-col">
+            <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wide">Purchase Price</span>
+            <span className="font-heading text-lg font-black text-[#3C322B]">
+              £{bean.price.toFixed(2)} · <span className="text-sm font-semibold text-neutral-500">{bean.weight || "250g"}</span>
+            </span>
+          </div>
+          <div className="flex flex-col items-end">
+            <span className="text-xs font-bold text-neutral-600">
+              £{pricePer100g.toFixed(2)} / 100g
+            </span>
+          </div>
         </div>
 
-        <div className="mt-auto flex items-center justify-between border-t border-border pt-4">
-          <div className="flex flex-col gap-1">
-            <div className="flex flex-wrap gap-1">
-              {bean.purposes.slice(0, 2).map((p) => (
-                <span
-                  key={p}
-                  className="rounded-full border border-border px-2 py-0.5 text-[11px] font-semibold text-muted-foreground"
-                >
-                  {p}
-                </span>
-              ))}
-              {bean.purposes.length > 2 && (
-                <span className="rounded-full border border-border px-2 py-0.5 text-[11px] font-semibold text-muted-foreground">
-                  +{bean.purposes.length - 2}
-                </span>
-              )}
-            </div>
+        {/* Variants indicator */}
+        {bean.variants && bean.variants.length > 1 && (
+          <div className="mt-2 text-[10px] font-black text-amber-800 bg-amber-50 border border-amber-100 rounded-md px-2 py-0.5 w-max">
+            ✨ Other sizes available
           </div>
-          {bean.url ? (
-            <a
-              href={trackingUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="rounded-full bg-secondary px-3 py-1.5 text-xs font-semibold text-foreground hover:bg-primary hover:text-primary-foreground transition-colors"
-            >
-              Buy Beans
-            </a>
-          ) : null}
+        )}
+
+        {/* Affiliate Link */}
+        <div className="mt-4 flex flex-col gap-1.5">
+          <a
+            href={trackingUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="w-full text-center rounded-full bg-primary hover:bg-primary/95 text-primary-foreground py-2.5 text-xs font-extrabold transition-all shadow-xs cursor-pointer inline-flex items-center justify-center gap-1"
+          >
+            <span>View at {bean.roaster}</span>
+            <span>→</span>
+          </a>
+          <p className="text-[9px] text-center text-muted-foreground/60 leading-tight">
+            We may earn a commission if you purchase through this link, at no extra cost to you.
+          </p>
         </div>
       </div>
     </article>
   )
 }
 
+// ==========================================
+// Bean Explorer / Discovery Component
+// ==========================================
+
 export type Filters = {
   regions: string[]
   flavors: string[]
   purposes: Purpose[]
+  roasts: Roast[]
+  maxPrice: number | null
+  countries: string[]
+  processes: string[]
+  varieties: string[]
+  altitudeRange: string | null // "low", "mid", "high"
 }
-
-export function BeanFilters({
-  filters,
-  setFilters,
-  total,
-  regions,
-}: {
-  filters: Filters
-  setFilters: (f: Filters) => void
-  total: number
-  regions: string[]
-}) {
-  const [isRegionCollapsed, setIsRegionCollapsed] = useState(false)
-
-  const hasActive =
-    filters.regions.length > 0 || filters.flavors.length > 0 || filters.purposes.length > 0
-
-  const toggleRegion = (region: string) => {
-    setFilters({
-      ...filters,
-      regions: filters.regions.includes(region)
-        ? filters.regions.filter((r) => r !== region)
-        : [...filters.regions, region],
-    })
-  }
-
-  const toggleFlavor = (flavor: string) => {
-    setFilters({
-      ...filters,
-      flavors: filters.flavors.includes(flavor)
-        ? filters.flavors.filter((f) => f !== flavor)
-        : [...filters.flavors, flavor],
-    })
-  }
-
-  const togglePurpose = (purpose: Purpose) => {
-    setFilters({
-      ...filters,
-      purposes: filters.purposes.includes(purpose)
-        ? filters.purposes.filter((p) => p !== purpose)
-        : [...filters.purposes, purpose],
-    })
-  }
-
-  // Dot colors for flavor profile groups
-  const groupDots = {
-    nutty: "bg-[#4E3629]", // espresso brown
-    fruity: "bg-[#B33939]", // rich red/burgundy
-    floral: "bg-[#8CA89E]", // soft sage green
-  }
-
-  return (
-    <aside className="flex flex-col gap-6 rounded-3xl border border-[#EADFD7] bg-white p-6 shadow-xs">
-      {/* Title */}
-      <div className="flex items-center gap-2.5 pb-2">
-        <svg className="size-6 text-[#3C322B]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-          <line x1="4" y1="21" x2="4" y2="14" />
-          <line x1="4" y1="10" x2="4" y2="3" />
-          <line x1="12" y1="21" x2="12" y2="12" />
-          <line x1="12" y1="8" x2="12" y2="3" />
-          <line x1="20" y1="21" x2="20" y2="16" />
-          <line x1="20" y1="12" x2="20" y2="3" />
-          <line x1="1" y1="14" x2="7" y2="14" />
-          <line x1="9" y1="8" x2="15" y2="8" />
-          <line x1="17" y1="16" x2="23" y2="16" />
-        </svg>
-        <h2 className="font-heading text-3xl font-bold text-[#3C322B]">
-          Filters
-        </h2>
-      </div>
-
-      {/* REGION SECTION */}
-      <div className="flex flex-col gap-2">
-        <div
-          className="flex items-center justify-between cursor-pointer select-none py-2"
-          onClick={() => setIsRegionCollapsed(!isRegionCollapsed)}
-        >
-          <h3 className="text-xs font-extrabold uppercase tracking-wider text-[#6B5A50]">
-            Region
-          </h3>
-          <ChevronDown
-            className={cn(
-              "size-4 text-[#6B5A50] transition-transform duration-200",
-              isRegionCollapsed ? "" : "rotate-180"
-            )}
-          />
-        </div>
-        <div
-          className={cn(
-            "transition-all duration-200 overflow-hidden",
-            isRegionCollapsed ? "max-h-0 opacity-0" : "opacity-100 mt-1"
-          )}
-        >
-          <div className="flex flex-col gap-2 max-h-52 overflow-y-auto pr-1">
-            {regions.map((region) => {
-              const active = filters.regions.includes(region)
-              return (
-                <label
-                  key={region}
-                  className="flex cursor-pointer items-center gap-3 py-1 text-sm select-none"
-                >
-                  <Checkbox
-                    checked={active}
-                    onCheckedChange={() => toggleRegion(region)}
-                  />
-                  <span className={cn(
-                    "transition-colors text-[#3C322B]",
-                    active ? "font-bold text-neutral-900" : "font-medium text-muted-foreground"
-                  )}>
-                    {region}
-                  </span>
-                </label>
-              )
-            })}
-          </div>
-        </div>
-      </div>
-
-      <hr className="border-t border-[#EADFD7] my-2" />
-
-      {/* FLAVOR PROFILES SECTION */}
-      <div className="flex flex-col gap-3">
-        <h3 className="text-xs font-extrabold uppercase tracking-wider text-[#6B5A50]">
-          Flavor Profiles
-        </h3>
-
-        {/* Nutty & Cocoa */}
-        <div className="flex flex-col gap-2">
-          <div className="flex items-center gap-2 text-xs font-bold text-[#3C322B] mt-1">
-            <span className={cn("size-2.5 rounded-full", groupDots.nutty)} />
-            Nutty & Cocoa
-          </div>
-          <div className="flex flex-wrap gap-1.5">
-            {["Chocolate", "Caramel", "Nutty", "Earthy"].map((flavor) => {
-              const active = filters.flavors.includes(flavor)
-              return (
-                <button
-                  key={flavor}
-                  onClick={() => toggleFlavor(flavor)}
-                  className={cn(
-                    "rounded-full px-3 py-1.5 text-xs font-semibold border transition-all cursor-pointer",
-                    active
-                      ? "bg-[#22150D] text-white border-transparent"
-                      : "bg-white hover:bg-neutral-50/50 text-[#3C322B] border-[#E2D8D0]"
-                  )}
-                >
-                  {flavor}
-                </button>
-              )
-            })}
-          </div>
-        </div>
-
-        {/* Fruity */}
-        <div className="flex flex-col gap-2">
-          <div className="flex items-center gap-2 text-xs font-bold text-[#3C322B] mt-2">
-            <span className={cn("size-2.5 rounded-full", groupDots.fruity)} />
-            Fruity
-          </div>
-          <div className="flex flex-wrap gap-1.5">
-            {["Citrus", "Stone Fruit", "Berry"].map((flavor) => {
-              const active = filters.flavors.includes(flavor)
-              return (
-                <button
-                  key={flavor}
-                  onClick={() => toggleFlavor(flavor)}
-                  className={cn(
-                    "rounded-full px-3 py-1.5 text-xs font-semibold border transition-all cursor-pointer",
-                    active
-                      ? "bg-[#22150D] text-white border-transparent"
-                      : "bg-white hover:bg-neutral-50/50 text-[#3C322B] border-[#E2D8D0]"
-                  )}
-                >
-                  {flavor}
-                </button>
-              )
-            })}
-          </div>
-        </div>
-
-        {/* Floral & Sweet */}
-        <div className="flex flex-col gap-2">
-          <div className="flex items-center gap-2 text-xs font-bold text-[#3C322B] mt-2">
-            <span className={cn("size-2.5 rounded-full", groupDots.floral)} />
-            Floral & Sweet
-          </div>
-          <div className="flex flex-wrap gap-1.5">
-            {["Floral", "Honey", "Spice"].map((flavor) => {
-              const active = filters.flavors.includes(flavor)
-              return (
-                <button
-                  key={flavor}
-                  onClick={() => toggleFlavor(flavor)}
-                  className={cn(
-                    "rounded-full px-3 py-1.5 text-xs font-semibold border transition-all cursor-pointer",
-                    active
-                      ? "bg-[#22150D] text-white border-transparent"
-                      : "bg-white hover:bg-neutral-50/50 text-[#3C322B] border-[#E2D8D0]"
-                  )}
-                >
-                  {flavor}
-                </button>
-              )
-            })}
-          </div>
-        </div>
-      </div>
-
-      <hr className="border-t border-[#EADFD7] my-2" />
-
-      {/* BREW METHOD SECTION */}
-      <div className="flex flex-col gap-2.5">
-        <h3 className="text-xs font-extrabold uppercase tracking-wider text-[#6B5A50]">
-          Brew Method
-        </h3>
-        <div className="flex flex-col gap-2.5 mt-1">
-          {ALL_PURPOSES.map((purpose) => {
-            const active = filters.purposes.includes(purpose)
-
-            let iconSvg = null
-            if (purpose === "Espresso") {
-              iconSvg = (
-                <svg className={cn("size-5 transition-colors", active ? "text-[#22150D]" : "text-muted-foreground")} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-                  <line x1="6" y1="12" x2="18" y2="12" />
-                  <line x1="8" y1="8" x2="16" y2="8" />
-                  <line x1="8" y1="16" x2="16" y2="16" />
-                  <path d="M12 5v14" />
-                  <path d="M10 5h4" />
-                  <path d="M10 19h4" />
-                </svg>
-              )
-            } else if (purpose === "Pour Over") {
-              iconSvg = (
-                <svg className={cn("size-5 transition-colors", active ? "text-[#22150D]" : "text-muted-foreground")} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M6 6h12l-3 9H9z" />
-                  <path d="M5 18h14" />
-                  <path d="M18 8a2 2 0 0 1 0 4" />
-                  <path d="M12 15v1" />
-                </svg>
-              )
-            } else if (purpose === "Cold Brew") {
-              iconSvg = (
-                <svg className={cn("size-5 transition-colors", active ? "text-[#22150D]" : "text-muted-foreground")} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-                  <circle cx="12" cy="13" r="7" />
-                  <path d="M12 9v4l2.5 2.5" />
-                  <path d="M12 2v2" />
-                  <path d="M10 2h4" />
-                  <path d="M19 6l-1.5 1.5" />
-                </svg>
-              )
-            } else if (purpose === "Drip") {
-              iconSvg = (
-                <svg className={cn("size-5 transition-colors", active ? "text-[#22150D]" : "text-muted-foreground")} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M6 3h12a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z" />
-                  <path d="M6 8h12" />
-                  <path d="M14 12a2 2 0 1 1-4 0v-1h4v1z" />
-                  <circle cx="12" cy="16" r="1" />
-                </svg>
-              )
-            } else if (purpose === "French Press") {
-              iconSvg = (
-                <svg className={cn("size-5 transition-colors", active ? "text-[#22150D]" : "text-muted-foreground")} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M7 5h10v14a2 2 0 0 1-2 2H9a2 2 0 0 1-2-2V5z" />
-                  <path d="M7 8H5v8h2" />
-                  <path d="M12 2v3" />
-                  <path d="M9 5h6" />
-                  <circle cx="12" cy="2" r="1" />
-                  <path d="M8 12h8" />
-                </svg>
-              )
-            }
-
-            return (
-              <div
-                key={purpose}
-                onClick={() => togglePurpose(purpose)}
-                className={cn(
-                  "w-full p-3.5 px-4 rounded-2xl flex items-center justify-between cursor-pointer border transition-all select-none bg-[#FAF5F0]/30 hover:bg-[#F3ECE5]/50 border-[#EADFD7] text-[#3C322B]",
-                  active && "bg-[#FAF5F0] border-neutral-900 text-neutral-900 shadow-xs font-bold"
-                )}
-              >
-                <div className="flex items-center gap-3.5">
-                  {iconSvg}
-                  <span className="text-sm font-semibold tracking-tight">{purpose}</span>
-                </div>
-                <div className={cn(
-                  "size-4.5 rounded-[5px] border flex items-center justify-center transition-colors shrink-0",
-                  active
-                    ? "bg-neutral-900 border-neutral-900 text-white"
-                    : "border-[#C5B7AE] bg-transparent"
-                )}>
-                  {active && <CheckIcon className="size-3 stroke-[3]" />}
-                </div>
-              </div>
-            )
-          })}
-        </div>
-      </div>
-
-      <hr className="border-t border-[#EADFD7] my-2" />
-
-      {/* Clear Filters Button */}
-      <button
-        onClick={() => setFilters({ regions: [], flavors: [], purposes: [] })}
-        className="w-full flex items-center justify-center gap-2 rounded-2xl bg-[#EFE9E4] hover:bg-[#E5DCD6] py-3.5 text-xs font-bold uppercase tracking-wider text-[#3C322B] transition-colors cursor-pointer"
-      >
-        Clear Filters
-        <X className="size-4" />
-      </button>
-    </aside>
-  )
-}
-
-
-// ==========================================
-// Bean Explorer Component
-// ==========================================
 
 export function BeanExplorer({
   query,
@@ -826,119 +526,571 @@ export function BeanExplorer({
   setQuery: (q: string) => void
   beans: Bean[]
 }) {
-  const [showFilters, setShowFilters] = useState(false)
+  const [selectedFlavorCategory, setSelectedFlavorCategory] = useState<string | null>(null)
+  const [drinkingStyle, setDrinkingStyle] = useState<string | null>(null)
+  const [sortBy, setSortBy] = useState<string>("recommended")
+  
+  // Advanced filters accordion toggle
+  const [showAdvancedFilters, setShowAdvancedFilters] = useState<boolean>(false)
+
   const [filters, setFilters] = useState<Filters>({
     regions: [],
     flavors: [],
     purposes: [],
+    roasts: [],
+    maxPrice: null,
+    countries: [],
+    processes: [],
+    varieties: [],
+    altitudeRange: null,
   })
 
-  const regions = useMemo(() => {
-    return Array.from(new Set(beans.map((b) => b.country))).sort()
-  }, [beans])
+  // Extract lists dynamically from data
+  const countries = useMemo(() => Array.from(new Set(beans.map((b) => b.country))).sort(), [beans])
+  const processes = useMemo(() => Array.from(new Set(beans.map((b) => b.process).filter(Boolean))) as string[], [beans])
+  
+  // Flavor Category definitions
+  const flavorCategories = [
+    {
+      id: "chocolatey",
+      name: "Chocolatey & comforting",
+      emoji: "🍫",
+      description: "Cocoa, nuts, sweet cookies",
+      flavors: ["Chocolate", "Nutty", "Earthy"]
+    },
+    {
+      id: "nutty",
+      name: "Nutty & smooth",
+      emoji: "🥜",
+      description: "Caramel, roasted nuts, hazelnut",
+      flavors: ["Nutty", "Caramel"]
+    },
+    {
+      id: "sweet",
+      name: "Sweet & balanced",
+      emoji: "🍯",
+      description: "Honey, brown sugar, vanilla",
+      flavors: ["Caramel", "Honey", "Vanilla", "Peach"]
+    },
+    {
+      id: "fruity",
+      name: "Fruity & bright",
+      emoji: "🍓",
+      description: "Berries, citrus fruits, stone fruits",
+      flavors: ["Citrus", "Stone Fruit", "Berry", "Tropical Fruit", "Blueberry", "Apple", "Peach"]
+    },
+    {
+      id: "floral",
+      name: "Floral & light",
+      emoji: "🌸",
+      description: "Jasmine, flower blossoms, tea-like",
+      flavors: ["Floral", "Jasmine"]
+    }
+  ]
 
-  const results = useMemo(() => {
+  // Clean filters helper
+  const handleClearFilters = () => {
+    setSelectedFlavorCategory(null)
+    setDrinkingStyle(null)
+    setFilters({
+      regions: [],
+      flavors: [],
+      purposes: [],
+      roasts: [],
+      maxPrice: null,
+      countries: [],
+      processes: [],
+      varieties: [],
+      altitudeRange: null,
+    })
+  }
+
+  // Toggles for checkboxes
+  const toggleFilterArray = (key: keyof Filters, value: any) => {
+    const arr = filters[key] as any[]
+    setFilters({
+      ...filters,
+      [key]: arr.includes(value) ? arr.filter((v) => v !== value) : [...arr, value]
+    })
+  }
+
+  // Matching logic
+  const filteredAndSortedBeans = useMemo(() => {
     const q = query.trim().toLowerCase()
-    return beans.filter((bean) => {
-      // 1. Region Filter
-      if (filters.regions.length > 0) {
-        if (!filters.regions.includes(bean.country)) return false
+
+    // 1. First, apply filters
+    let results = beans.filter((bean) => {
+      
+      // A. Vibe Category Filter (intersection)
+      if (selectedFlavorCategory) {
+        const cat = flavorCategories.find(c => c.id === selectedFlavorCategory)
+        if (cat) {
+          const matchesCategory = bean.flavors.some(f => cat.flavors.includes(f))
+          if (!matchesCategory) return false
+        }
       }
 
-      // 2. Flavor Filter
-      if (
-        filters.flavors.length > 0 &&
-        !filters.flavors.every((f) => bean.flavors.includes(f))
-      )
-        return false
+      // B. How do you drink coffee?
+      if (drinkingStyle) {
+        if (drinkingStyle === "milk") {
+          const suitable = bean.roast === "Medium" || bean.roast === "Medium-Dark" || bean.roast === "Dark" || bean.flavors.some(f => ["Chocolate", "Nutty", "Caramel", "Honey"].includes(f)) || bean.purposes.includes("Espresso");
+          if (!suitable) return false
+        } else if (drinkingStyle === "black") {
+          const suitable = bean.roast === "Light" || bean.roast === "Medium" || bean.purposes.some(p => ["Pour Over", "Drip", "French Press", "Aeropress"].includes(p));
+          if (!suitable) return false
+        } else if (drinkingStyle === "espresso") {
+          if (!bean.purposes.includes("Espresso")) return false
+        } else if (drinkingStyle === "filter") {
+          const hasFilter = bean.purposes.some(p => ["Pour Over", "Drip", "French Press", "Aeropress", "Moka Pot", "Cold Brew"].includes(p))
+          if (!hasFilter) return false
+        }
+      }
 
-      // 3. Brew Method Filter
-      if (
-        filters.purposes.length > 0 &&
-        !filters.purposes.some((p) => bean.purposes.includes(p))
-      )
-        return false
+      // C. Simple Taste Profile Filters
+      if (filters.flavors.length > 0) {
+        if (!filters.flavors.every(f => bean.flavors.includes(f))) return false
+      }
 
-      // 4. Search text filter
+      // D. Price limit (absolute price)
+      if (filters.maxPrice !== null) {
+        if (bean.price > filters.maxPrice) return false
+      }
+
+      // E. Roast Levels
+      if (filters.roasts.length > 0) {
+        if (!filters.roasts.includes(bean.roast)) return false
+      }
+
+      // F. Technical - Origin Countries
+      if (filters.countries.length > 0) {
+        if (!filters.countries.includes(bean.country)) return false
+      }
+
+      // G. Technical - Process Method
+      if (filters.processes.length > 0) {
+        if (!bean.process || !filters.processes.includes(bean.process)) return false
+      }
+
+      // H. Technical - Altitude
+      if (filters.altitudeRange !== null) {
+        if (!matchAltitudeRange(bean.altitude, filters.altitudeRange)) return false
+      }
+
+      // I. Search Text
       if (q) {
         const haystack = [
           bean.name,
+          bean.roaster,
           bean.country,
           bean.region,
           bean.roast,
+          bean.process,
+          bean.variety,
           ...bean.flavors,
           ...bean.purposes,
         ]
+          .filter(Boolean)
           .join(" ")
           .toLowerCase()
         if (!haystack.includes(q)) return false
       }
+
       return true
     })
-  }, [query, filters, beans])
+
+    // 2. Sort results
+    if (sortBy === "priceAsc") {
+      // Sort by price per 100g (low to high)
+      results.sort((a, b) => {
+        const priceA = calculatePricePer100g(a.price, a.weight)
+        const priceB = calculatePricePer100g(b.price, b.weight)
+        return priceA - priceB
+      })
+    } else if (sortBy === "priceDesc") {
+      // Sort by price per 100g (high to low)
+      results.sort((a, b) => {
+        const priceA = calculatePricePer100g(a.price, a.weight)
+        const priceB = calculatePricePer100g(b.price, b.weight)
+        return priceB - priceA
+      })
+    } else if (sortBy === "rating") {
+      results.sort((a, b) => b.rating - a.rating)
+    } else {
+      // Recommended: featured first, then rating
+      results.sort((a, b) => {
+        if (a.featured && !b.featured) return -1
+        if (!a.featured && b.featured) return 1
+        return b.rating - a.rating
+      })
+    }
+
+    return results
+  }, [query, selectedFlavorCategory, drinkingStyle, filters, sortBy, beans])
+
+  // Identify Best Match (top rated bean in filtered list)
+  const bestMatchId = useMemo(() => {
+    if (filteredAndSortedBeans.length === 0) return null
+    let best = filteredAndSortedBeans[0]
+    for (let i = 1; i < filteredAndSortedBeans.length; i++) {
+      if (filteredAndSortedBeans[i].rating > best.rating) {
+        best = filteredAndSortedBeans[i]
+      }
+    }
+    return best.id
+  }, [filteredAndSortedBeans])
 
   return (
-    <section id="explore" className="mx-auto w-full max-w-6xl px-5 py-16">
-      <div className="mb-8 flex flex-col gap-3 text-center">
-        <h2 className="font-heading text-3xl font-semibold text-foreground sm:text-4xl text-balance">
-          Find your perfect bean
+    <section id="explore" className="mx-auto w-full max-w-6xl px-5 py-12 scroll-mt-20">
+      
+      {/* Discovery Section Heading */}
+      <div className="mb-10 text-center max-w-xl mx-auto flex flex-col gap-2">
+        <h2 className="font-heading text-3xl font-bold text-[#3C322B] sm:text-4xl">
+          Bean Finder
         </h2>
-        <p className="mx-auto max-w-md text-pretty leading-relaxed text-muted-foreground">
-          Search and filter by where it&apos;s grown, how it tastes, and the way
-          you love to brew.
+        <p className="text-sm text-muted-foreground">
+          Find your next favorite bag of coffee. Choose a flavour profile or select how you brew.
         </p>
       </div>
 
-      <div className="mb-8 flex flex-col gap-3 sm:flex-row sm:items-center">
-        <div className="relative flex-1">
-          <Search className="pointer-events-none absolute left-4 top-1/2 size-5 -translate-y-1/2 text-muted-foreground" />
-          <input
-            type="search"
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-            placeholder="Search beans, regions, or flavors..."
-            className="w-full rounded-full border border-border bg-card py-3.5 pl-12 pr-4 text-sm font-semibold text-foreground outline-none transition-colors placeholder:font-normal placeholder:text-muted-foreground focus:border-primary focus:ring-2 focus:ring-ring/30"
-          />
+      {/* ==========================================
+          STEP 1: FLAVOUR VIBES (At the top)
+          ========================================== */}
+      <div className="mb-10">
+        <h3 className="text-sm font-extrabold uppercase tracking-widest text-[#6D5A50] text-center mb-6">
+          1. Choose your flavour profile
+        </h3>
+        
+        <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
+          {flavorCategories.map((cat) => {
+            const active = selectedFlavorCategory === cat.id
+            return (
+              <button
+                key={cat.id}
+                onClick={() => setSelectedFlavorCategory(active ? null : cat.id)}
+                className={cn(
+                  "flex flex-col items-center text-center p-5 rounded-3xl border transition-all cursor-pointer select-none",
+                  active
+                    ? "bg-[#FAF5F0] border-[#3C322B] ring-2 ring-[#3C322B]/20 scale-[1.02] shadow-xs"
+                    : "bg-white border-[#EADFD7] hover:bg-neutral-50 hover:translate-y-[-2px] shadow-2xs"
+                )}
+              >
+                <span className="text-4xl mb-3 block transform transition-transform group-hover:scale-110">{cat.emoji}</span>
+                <span className="font-bold text-sm text-[#3C322B] leading-tight mb-1">{cat.name}</span>
+                <span className="text-[10px] text-muted-foreground leading-normal">{cat.description}</span>
+              </button>
+            )
+          })}
         </div>
-        <button
-          onClick={() => setShowFilters((s) => !s)}
-          className="flex items-center justify-center gap-2 rounded-full border border-border bg-card px-5 py-3.5 text-sm font-semibold text-foreground transition-colors hover:bg-secondary lg:hidden"
-        >
-          <SlidersHorizontal className="size-4" />
-          Filters
-        </button>
       </div>
 
-      <div className="grid grid-cols-1 gap-8 lg:grid-cols-[280px_1fr]">
-        <div className={`${showFilters ? "block" : "hidden"} lg:block`}>
-          <div className="lg:sticky lg:top-24 max-h-[calc(100vh-120px)] overflow-y-auto pr-2">
-            <BeanFilters
-              filters={filters}
-              setFilters={setFilters}
-              total={results.length}
-              regions={regions}
-            />
-          </div>
+      {/* ==========================================
+          STEP 2: DRINKING STYLE (At the top)
+          ========================================== */}
+      <div className="mb-12 border-b border-[#EADFD7]/60 pb-8">
+        <h3 className="text-sm font-extrabold uppercase tracking-widest text-[#6D5A50] text-center mb-5">
+          2. How do you drink your coffee?
+        </h3>
+        
+        <div className="flex flex-wrap justify-center gap-3">
+          {[
+            { id: "milk", label: "🥛 With Milk", desc: "Best for Latte, Flat White, Cappuccino" },
+            { id: "black", label: "☕ Black", desc: "Smooth, clean single origins" },
+            { id: "espresso", label: "⚡ Espresso", desc: "Rich shots and stovetop makers" },
+            { id: "filter", label: "💧 Filter", desc: "Pour over, French press, drip makers" },
+            { id: "not-sure", label: "🤷 Not Sure", desc: "Show me all starter options" }
+          ].map((style) => {
+            const active = style.id === "not-sure" ? drinkingStyle === null : drinkingStyle === style.id
+            return (
+              <button
+                key={style.id}
+                onClick={() => setDrinkingStyle(style.id === "not-sure" ? null : style.id)}
+                className={cn(
+                  "rounded-full px-5 py-2.5 text-xs font-bold transition-all border cursor-pointer select-none",
+                  active
+                    ? "bg-[#3C322B] text-white border-transparent shadow-xs"
+                    : "bg-white text-neutral-700 border-[#EADFD7] hover:bg-neutral-50"
+                )}
+                title={style.desc}
+              >
+                {style.label}
+              </button>
+            )
+          })}
         </div>
+      </div>
 
+      {/* ==========================================
+          STEP 3: MAIN LISTING + FILTERS
+          ========================================== */}
+      <div className="grid grid-cols-1 gap-8 lg:grid-cols-[280px_1fr]">
+        
+        {/* FILTERS PANEL (LEFT) */}
+        <aside className="lg:sticky lg:top-24 h-fit space-y-6">
+          <div className="flex items-center justify-between">
+            <h3 className="font-heading text-lg font-bold text-[#3C322B]">Filters</h3>
+            
+            {/* Clear Filters */}
+            <button
+              onClick={handleClearFilters}
+              className="text-xs font-bold text-primary hover:underline cursor-pointer"
+            >
+              Reset all
+            </button>
+          </div>
+
+          <div className="rounded-3xl border border-[#EADFD7] bg-white p-5 space-y-5">
+            {/* SEARCH BOX WITHIN FILTERS FOR MOBILE */}
+            <div className="relative block">
+              <Search className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
+              <input
+                type="search"
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+                placeholder="Search roaster or keyword..."
+                className="w-full rounded-2xl border border-border bg-[#FCF8F5]/50 py-2.5 pl-9 pr-4 text-xs font-semibold text-[#3C322B] outline-none transition-colors focus:border-primary"
+              />
+            </div>
+
+            {/* Price Filter (Simple) */}
+            <div className="space-y-2">
+              <span className="text-[10px] font-extrabold uppercase tracking-wider text-[#6D5A50]">Max Price</span>
+              <div className="flex flex-wrap gap-1.5">
+                {[
+                  { value: null, label: "Any" },
+                  { value: 5, label: "£5" },
+                  { value: 10, label: "£10" },
+                  { value: 15, label: "£15" },
+                  { value: 20, label: "£20" }
+                ].map((p) => {
+                  const active = filters.maxPrice === p.value
+                  return (
+                    <button
+                      key={p.label}
+                      onClick={() => setFilters({ ...filters, maxPrice: p.value })}
+                      className={cn(
+                        "rounded-full px-3 py-1 text-xs font-semibold border transition-all cursor-pointer",
+                        active
+                          ? "bg-[#3C322B] text-white border-transparent"
+                          : "bg-[#FCF8F5] text-neutral-600 border-[#EADFD7] hover:bg-neutral-100"
+                      )}
+                    >
+                      {p.label}
+                    </button>
+                  )
+                })}
+              </div>
+            </div>
+
+            {/* Roast Level Filter (Simple) */}
+            <div className="space-y-2">
+              <span className="text-[10px] font-extrabold uppercase tracking-wider text-[#6D5A50]">Roast Level</span>
+              <div className="flex flex-col gap-2">
+                {["Light", "Medium", "Medium-Dark", "Dark"].map((roast) => {
+                  const active = filters.roasts.includes(roast as Roast)
+                  return (
+                    <label key={roast} className="flex cursor-pointer items-center gap-3 text-xs font-bold text-neutral-700 select-none">
+                      <Checkbox
+                        checked={active}
+                        onCheckedChange={() => toggleFilterArray("roasts", roast)}
+                      />
+                      <span className={active ? "text-neutral-900 font-extrabold" : "font-medium"}>
+                        {roast}
+                      </span>
+                    </label>
+                  )
+                })}
+              </div>
+            </div>
+
+            {/* Taste Profile Tags */}
+            <div className="space-y-2">
+              <span className="text-[10px] font-extrabold uppercase tracking-wider text-[#6D5A50]">Specific Flavors</span>
+              <div className="flex flex-wrap gap-1.5">
+                {["Chocolate", "Nutty", "Caramel", "Honey", "Floral", "Berry", "Citrus", "Stone Fruit"].map((flavor) => {
+                  const active = filters.flavors.includes(flavor)
+                  return (
+                    <button
+                      key={flavor}
+                      onClick={() => toggleFilterArray("flavors", flavor)}
+                      className={cn(
+                        "rounded-full px-2.5 py-1 text-[11px] font-bold border transition-all cursor-pointer",
+                        active
+                          ? "bg-[#3C322B] text-white border-transparent"
+                          : "bg-white text-neutral-600 border-[#EADFD7] hover:bg-neutral-50"
+                      )}
+                    >
+                      {getFlavorEmoji(flavor)} {flavor}
+                    </button>
+                  )
+                })}
+              </div>
+            </div>
+
+            {/* ADVANCED "MORE FILTERS" ACCORDION */}
+            <div className="border-t border-[#EADFD7] pt-4 mt-2">
+              <button
+                onClick={() => setShowAdvancedFilters(!showAdvancedFilters)}
+                className="w-full flex items-center justify-between text-left text-xs font-bold text-[#6D5A50] hover:text-[#3C322B] cursor-pointer"
+              >
+                <span>⚙️ Technical Filters</span>
+                {showAdvancedFilters ? <ChevronUp className="size-4" /> : <ChevronDown className="size-4" />}
+              </button>
+
+              {showAdvancedFilters && (
+                <div className="space-y-4 pt-3 transition-all duration-300">
+                  {/* Country Origin */}
+                  <div className="space-y-2">
+                    <span className="text-[10px] font-extrabold uppercase tracking-wider text-[#6D5A50]/80">Country</span>
+                    <div className="flex flex-col gap-1.5 max-h-36 overflow-y-auto pr-1">
+                      {countries.map((country) => {
+                        const active = filters.countries.includes(country)
+                        return (
+                          <label key={country} className="flex cursor-pointer items-center gap-2.5 text-xs font-semibold text-neutral-600 select-none">
+                            <Checkbox
+                              checked={active}
+                              onCheckedChange={() => toggleFilterArray("countries", country)}
+                            />
+                            <span className={active ? "text-neutral-900 font-bold" : ""}>{country}</span>
+                          </label>
+                        )
+                      })}
+                    </div>
+                  </div>
+
+                  {/* Processing Method */}
+                  <div className="space-y-2">
+                    <span className="text-[10px] font-extrabold uppercase tracking-wider text-[#6D5A50]/80">Process Method</span>
+                    <div className="flex flex-wrap gap-1.5">
+                      {processes.map((proc) => {
+                        const active = filters.processes.includes(proc)
+                        return (
+                          <button
+                            key={proc}
+                            onClick={() => toggleFilterArray("processes", proc)}
+                            className={cn(
+                              "rounded-full px-2 py-0.5 text-[10px] font-bold border transition-all cursor-pointer",
+                              active
+                                ? "bg-[#3C322B] text-white border-transparent"
+                                : "bg-white text-neutral-500 border-[#EADFD7] hover:bg-neutral-50"
+                            )}
+                          >
+                            {proc}
+                          </button>
+                        )
+                      })}
+                    </div>
+                  </div>
+
+                  {/* Altitude */}
+                  <div className="space-y-2">
+                    <span className="text-[10px] font-extrabold uppercase tracking-wider text-[#6D5A50]/80">Altitude (Elevation)</span>
+                    <div className="flex flex-col gap-1.5">
+                      {[
+                        { value: "low", label: "Low Elevation (Under 1,200m)" },
+                        { value: "mid", label: "Medium Elevation (1,200m - 1,600m)" },
+                        { value: "high", label: "High Elevation (Over 1,600m)" }
+                      ].map((alt) => {
+                        const active = filters.altitudeRange === alt.value
+                        return (
+                          <label key={alt.value} className="flex cursor-pointer items-center gap-2 text-xs font-semibold text-neutral-600 select-none">
+                            <input
+                              type="radio"
+                              name="altitudeRange"
+                              checked={active}
+                              onChange={() => setFilters({ ...filters, altitudeRange: active ? null : alt.value })}
+                              onClick={() => {
+                                if (active) {
+                                  setFilters({ ...filters, altitudeRange: null })
+                                }
+                              }}
+                              className="size-3.5 accent-[#3C322B]"
+                            />
+                            <span className={active ? "text-neutral-900 font-bold" : ""}>{alt.label}</span>
+                          </label>
+                        )
+                      })}
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
+
+          </div>
+        </aside>
+
+        {/* RESULTS GRID (RIGHT) */}
         <div>
-          {results.length > 0 ? (
+          {/* List Toolbar */}
+          <div className="mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+            <div className="flex items-center gap-2 flex-wrap">
+              <span className="font-heading text-lg font-bold text-[#3C322B]">
+                {filteredAndSortedBeans.length} {filteredAndSortedBeans.length === 1 ? 'coffee matching' : 'coffees found'}
+              </span>
+              {(selectedFlavorCategory || drinkingStyle) && (
+                <div className="flex gap-1.5 flex-wrap items-center">
+                  {selectedFlavorCategory && (
+                    <span className="inline-flex items-center gap-1 rounded-full bg-amber-50 border border-amber-200 px-2.5 py-0.5 text-[10px] font-bold text-amber-900 uppercase tracking-wide">
+                      Vibe: {flavorCategories.find(c => c.id === selectedFlavorCategory)?.name.split(" ")[0]}
+                      <X className="size-3 cursor-pointer ml-1" onClick={() => setSelectedFlavorCategory(null)} />
+                    </span>
+                  )}
+                  {drinkingStyle && (
+                    <span className="inline-flex items-center gap-1 rounded-full bg-neutral-100 border border-neutral-200 px-2.5 py-0.5 text-[10px] font-bold text-neutral-800 uppercase tracking-wide">
+                      Brew: {drinkingStyle}
+                      <X className="size-3 cursor-pointer ml-1" onClick={() => setDrinkingStyle(null)} />
+                    </span>
+                  )}
+                </div>
+              )}
+            </div>
+
+            <div className="flex items-center gap-2">
+              <span className="text-xs font-bold text-muted-foreground uppercase tracking-wide">Sort by:</span>
+              <select
+                value={sortBy}
+                onChange={(e) => setSortBy(e.target.value)}
+                className="rounded-xl border border-[#EADFD7] bg-white py-2 px-3 text-xs font-bold text-[#3C322B] focus:border-primary outline-none cursor-pointer"
+              >
+                <option value="recommended">⭐ Recommended</option>
+                <option value="priceAsc">📈 Price: Low to High (per 100g)</option>
+                <option value="priceDesc">📉 Price: High to Low (per 100g)</option>
+                <option value="rating">🏆 Highest Rated</option>
+              </select>
+            </div>
+          </div>
+
+          {/* Beans Loop */}
+          {filteredAndSortedBeans.length > 0 ? (
             <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 xl:grid-cols-3">
-              {results.map((bean) => (
-                <BeanCard key={bean.id} bean={bean} query={query} filters={filters} />
+              {filteredAndSortedBeans.map((bean) => (
+                <BeanCard
+                  key={bean.id}
+                  bean={bean}
+                  query={query}
+                  filters={filters}
+                  isBestMatch={bean.id === bestMatchId && (selectedFlavorCategory !== null || drinkingStyle !== null)}
+                />
               ))}
             </div>
           ) : (
-            <div className="flex flex-col items-center justify-center gap-2 rounded-3xl border border-dashed border-border bg-card px-6 py-20 text-center">
-              <p className="font-heading text-xl font-semibold text-foreground">
-                No beans match yet
+            <div className="flex flex-col items-center justify-center gap-3 rounded-[2rem] border border-dashed border-[#EADFD7] bg-white px-6 py-20 text-center">
+              <span className="text-4xl">🤷‍♂️</span>
+              <p className="font-heading text-xl font-bold text-[#3C322B]">
+                No coffees match your preferences
               </p>
-              <p className="text-sm text-muted-foreground">
-                Try clearing a filter or searching something else.
+              <p className="text-sm text-muted-foreground max-w-sm">
+                Try selecting a different flavor profile, removing filters, or clearing your search term.
               </p>
+              <button
+                onClick={handleClearFilters}
+                className="mt-2 rounded-full bg-primary px-5 py-2.5 text-xs font-extrabold text-primary-foreground hover:bg-primary/95 transition-all shadow-2xs"
+              >
+                Start Fresh
+              </button>
             </div>
           )}
         </div>
+
       </div>
     </section>
   )
@@ -982,10 +1134,9 @@ export default function Page() {
   }, [])
 
   return (
-    <main className="min-h-screen bg-[#FCF8F5] text-foreground">
-      <SiteHeader searchQuery={query} setSearchQuery={setQuery} placeholder="Search beans..." />
-      <Hero beans={liveBeans} />
-      <HowItWorks />
+    <main className="min-h-screen bg-[#FCF8F5] text-foreground font-sans">
+      <SiteHeader searchQuery={query} setSearchQuery={setQuery} placeholder="Search coffee beans or roasters..." />
+      <Hero />
       <BeanExplorer query={query} setQuery={setQuery} beans={liveBeans} />
       <SiteFooter />
     </main>

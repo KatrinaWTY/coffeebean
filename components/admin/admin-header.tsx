@@ -13,6 +13,7 @@ import {
   X,
   LayoutDashboard,
   Sparkles,
+  Upload,
 } from "lucide-react"
 import { logoutAdminAction } from "@/app/admin/actions"
 import { cn } from "@/lib/utils"
@@ -36,6 +37,12 @@ export function AdminHeader() {
       label: "Add New Bean",
       icon: PlusCircle,
       active: pathname === "/admin/coffee-beans/new",
+    },
+    {
+      href: "/admin/coffee-beans/import",
+      label: "Batch Import",
+      icon: Upload,
+      active: pathname === "/admin/coffee-beans/import",
     },
     {
       href: "/admin/affiliate",

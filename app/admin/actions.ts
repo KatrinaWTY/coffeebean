@@ -14,9 +14,13 @@ import {
   deleteBean,
   toggleBeanStock,
   getBeans,
+  batchUpsertBeans,
+  BatchImportResult,
 } from "@/lib/db/beans"
 import { getRetailers, createRetailer } from "@/lib/db/retailers"
 import { recordConversion, importConversionsFromCsv } from "@/lib/db/conversions"
+import { validateRow, NormalizedImportBean } from "@/lib/import/validator"
+import { generateTemplateXlsxBuffer, generateTemplateCsvText } from "@/lib/import/columns"
 import {
   BeanFormData,
   FormState,
@@ -111,6 +115,8 @@ export async function saveBeanAction(
   const weight = formData.get("weight")?.toString()?.trim() || "250g"
   const variety = formData.get("variety")?.toString()?.trim() || ""
   const process = formData.get("process")?.toString()?.trim() || "Washed"
+  const altitude = formData.get("altitude")?.toString()?.trim() || ""
+  const rawVariants = formData.get("variants")?.toString() || "[]"
   const rating = parseFloat(formData.get("rating")?.toString() || "4.5")
   const blurb = formData.get("blurb")?.toString()?.trim() || ""
   const url = formData.get("url")?.toString()?.trim() || ""
@@ -185,6 +191,14 @@ export async function saveBeanAction(
       .filter(Boolean)
   }
 
+  let variants: { weight: string; price: number }[] = []
+  try {
+    variants = JSON.parse(rawVariants)
+    if (!Array.isArray(variants)) variants = []
+  } catch {
+    variants = []
+  }
+
   const beanData: BeanFormData = {
     name,
     roaster,
@@ -202,6 +216,8 @@ export async function saveBeanAction(
     weight,
     variety,
     process,
+    altitude,
+    variants,
     rating: Math.min(5, Math.max(1, rating)),
     blurb:
       blurb ||
@@ -420,4 +436,132 @@ export async function importConversionsCsvAction(csvText: string): Promise<{ suc
     return { success: false, message: err.message || "CSV import failed." }
   }
 }
+
+/**
+ * Batch import coffee beans action
+ */
+export async function batchImportBeansAction(payload: {
+  rows: { rowNumber: number; data: NormalizedImportBean }[]
+  duplicateMode: "skip" | "update"
+}): Promise<{
+  success: boolean
+  message: string
+  results?: BatchImportResult
+  errors?: string[]
+}> {
+  const isAuth = await isAdminAuthenticated()
+  if (!isAuth) {
+    return { success: false, message: "Unauthorized: Admin session required." }
+  }
+
+  const { rows, duplicateMode } = payload
+  if (!rows || !Array.isArray(rows) || rows.length === 0) {
+    return { success: false, message: "No coffee beans to import." }
+  }
+
+  if (rows.length > 1000) {
+    return { success: false, message: "Exceeded maximum limit of 1,000 rows per batch." }
+  }
+
+  // 1. Fetch current retailers to map/create retailer IDs
+  const retailers = await getRetailers()
+  const retailerMap = new Map<string, string>()
+  retailers.forEach((r) => retailerMap.set(r.name.toLowerCase(), r.id))
+
+  // 2. Resolve retailer IDs for each row (auto-create if new)
+  const itemsToImport: {
+    rowNumber: number
+    data: NormalizedImportBean & { retailerId: string }
+  }[] = []
+
+  const validationErrors: string[] = []
+
+  for (const item of rows) {
+    const rawRowData = item.data
+    // Server-side validation check
+    const check = validateRow(rawRowData as any, item.rowNumber)
+    if (check.status === "error") {
+      validationErrors.push(
+        `Row ${item.rowNumber} (${rawRowData.name || "Unnamed"}): ${check.errors.map((e) => e.message).join(", ")}`
+      )
+      continue
+    }
+
+    const retName = (rawRowData.retailerName || rawRowData.roaster || "Unknown").trim()
+    const retKey = retName.toLowerCase()
+    let retId = retailerMap.get(retKey)
+
+    if (!retId && retName) {
+      try {
+        const created = await createRetailer({ name: retName })
+        retId = created.id
+        retailerMap.set(retKey, retId)
+      } catch {
+        retId = `retailer-${Date.now()}`
+      }
+    }
+
+    itemsToImport.push({
+      rowNumber: item.rowNumber,
+      data: {
+        ...check.data,
+        retailerId: retId || "",
+      },
+    })
+  }
+
+  if (itemsToImport.length === 0 && validationErrors.length > 0) {
+    return {
+      success: false,
+      message: "Validation failed for all rows. Please review errors and try again.",
+      errors: validationErrors,
+    }
+  }
+
+  try {
+    const importResults = await batchUpsertBeans(itemsToImport, duplicateMode)
+    revalidatePath("/")
+    revalidatePath("/admin")
+    revalidatePath("/admin/coffee-beans")
+    revalidatePath("/admin/coffee-beans/import")
+
+    return {
+      success: true,
+      message: `Batch import completed: ${importResults.createdCount} created, ${importResults.updatedCount} updated, ${importResults.skippedCount} skipped, ${importResults.failedCount} failed.`,
+      results: importResults,
+      errors: validationErrors.length > 0 ? validationErrors : undefined,
+    }
+  } catch (err: any) {
+    return {
+      success: false,
+      message: err.message || "Failed to execute batch import.",
+      errors: [err.message],
+    }
+  }
+}
+
+/**
+ * Download Batch Upload Template action (server generated)
+ */
+export async function downloadTemplateAction(format: "xlsx" | "csv") {
+  const isAuth = await isAdminAuthenticated()
+  if (!isAuth) throw new Error("Unauthorized")
+
+  if (format === "csv") {
+    return {
+      format: "csv",
+      content: generateTemplateCsvText(),
+      filename: "coffee_beans_batch_import_template.csv",
+    }
+  }
+
+  const buffer = generateTemplateXlsxBuffer()
+  const base64 = Buffer.from(buffer).toString("base64")
+  return {
+    format: "xlsx",
+    base64,
+    filename: "coffee_beans_batch_import_template.xlsx",
+  }
+}
+
 

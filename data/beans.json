@@ -35,7 +35,22 @@
     "retailerId": "climpson-sons",
     "affiliateUrl": "",
     "affiliateNetwork": "",
-    "merchantId": ""
+    "merchantId": "",
+    "altitude": "1,100m - 1,350m",
+    "variants": [
+      {
+        "weight": "250g",
+        "price": 15
+      },
+      {
+        "weight": "500g",
+        "price": 28
+      },
+      {
+        "weight": "1kg",
+        "price": 50
+      }
+    ]
   },
   {
     "id": "climpson-sons-the-estate-fero-ethiopia",
@@ -74,7 +89,9 @@
     "retailerId": "climpson-sons",
     "affiliateUrl": "",
     "affiliateNetwork": "",
-    "merchantId": ""
+    "merchantId": "",
+    "altitude": "1,800m - 2,200m",
+    "variants": []
   },
   {
     "id": "climpson-sons-broadway-blend-brazil-peru",
@@ -112,7 +129,9 @@
     "retailerId": "climpson-sons",
     "affiliateUrl": "",
     "affiliateNetwork": "",
-    "merchantId": ""
+    "merchantId": "",
+    "altitude": "1,100m - 1,350m",
+    "variants": []
   },
   {
     "id": "climpson-sons-the-fields-migoti-burundi",
@@ -151,7 +170,9 @@
     "retailerId": "climpson-sons",
     "affiliateUrl": "",
     "affiliateNetwork": "",
-    "merchantId": ""
+    "merchantId": "",
+    "altitude": "1,700m - 2,000m",
+    "variants": []
   },
   {
     "id": "climpson-sons-decaf-la-plata-colombia",
@@ -190,7 +211,9 @@
     "retailerId": "climpson-sons",
     "affiliateUrl": "",
     "affiliateNetwork": "",
-    "merchantId": ""
+    "merchantId": "",
+    "altitude": "1,500m - 1,900m",
+    "variants": []
   },
   {
     "id": "climpson-sons-khar-taw-hmi-myanmar",
@@ -229,7 +252,9 @@
     "retailerId": "climpson-sons",
     "affiliateUrl": "",
     "affiliateNetwork": "",
-    "merchantId": ""
+    "merchantId": "",
+    "altitude": "1,200m - 1,500m",
+    "variants": []
   },
   {
     "id": "climpson-sons-musasa-ruli-rwanda",
@@ -267,7 +292,9 @@
     "retailerId": "climpson-sons",
     "affiliateUrl": "",
     "affiliateNetwork": "",
-    "merchantId": ""
+    "merchantId": "",
+    "altitude": "1,650m - 2,010m",
+    "variants": []
   },
   {
     "id": "climpson-sons-ngila-estate-tanzania",
@@ -306,7 +333,9 @@
     "retailerId": "climpson-sons",
     "affiliateUrl": "",
     "affiliateNetwork": "",
-    "merchantId": ""
+    "merchantId": "",
+    "altitude": "1,350m - 1,800m",
+    "variants": []
   },
   {
     "id": "formative-coffee-choc-nuts",
@@ -344,7 +373,18 @@
     "retailerId": "formative-coffee",
     "affiliateUrl": "",
     "affiliateNetwork": "",
-    "merchantId": ""
+    "merchantId": "",
+    "altitude": "1,100m - 1,350m",
+    "variants": [
+      {
+        "weight": "250g",
+        "price": 15
+      },
+      {
+        "weight": "500g",
+        "price": 27.5
+      }
+    ]
   },
   {
     "id": "formative-coffee-berry-jam",
@@ -380,7 +420,9 @@
     "retailerId": "formative-coffee",
     "affiliateUrl": "",
     "affiliateNetwork": "",
-    "merchantId": ""
+    "merchantId": "",
+    "altitude": "1,800m - 2,200m",
+    "variants": []
   },
   {
     "id": "formative-coffee-decaf---popayn",
@@ -418,7 +460,9 @@
     "retailerId": "formative-coffee",
     "affiliateUrl": "",
     "affiliateNetwork": "",
-    "merchantId": ""
+    "merchantId": "",
+    "altitude": "1,500m - 1,900m",
+    "variants": []
   },
   {
     "id": "formative-coffee-peachy",
@@ -455,7 +499,9 @@
     "retailerId": "formative-coffee",
     "affiliateUrl": "",
     "affiliateNetwork": "",
-    "merchantId": ""
+    "merchantId": "",
+    "altitude": "1,500m - 1,900m",
+    "variants": []
   },
   {
     "id": "formative-coffee-fizzy-apple",
@@ -491,7 +537,9 @@
     "retailerId": "formative-coffee",
     "affiliateUrl": "",
     "affiliateNetwork": "",
-    "merchantId": ""
+    "merchantId": "",
+    "altitude": "1,500m - 1,900m",
+    "variants": []
   },
   {
     "id": "formative-coffee-mandarin",
@@ -528,7 +576,9 @@
     "retailerId": "formative-coffee",
     "affiliateUrl": "",
     "affiliateNetwork": "",
-    "merchantId": ""
+    "merchantId": "",
+    "altitude": "1,200m - 1,600m",
+    "variants": []
   },
   {
     "id": "formative-coffee-orange-blossom",
@@ -568,7 +618,9 @@
     "retailerId": "formative-coffee",
     "affiliateUrl": "",
     "affiliateNetwork": "",
-    "merchantId": ""
+    "merchantId": "",
+    "altitude": "1,200m - 1,600m",
+    "variants": []
   },
   {
     "id": "formative-coffee-pink-starburst",
@@ -605,7 +657,9 @@
     "retailerId": "formative-coffee",
     "affiliateUrl": "",
     "affiliateNetwork": "",
-    "merchantId": ""
+    "merchantId": "",
+    "altitude": "1,500m - 1,900m",
+    "variants": []
   },
   {
     "id": "formative-coffee-elderflower-drops",
@@ -642,7 +696,9 @@
     "retailerId": "formative-coffee",
     "affiliateUrl": "",
     "affiliateNetwork": "",
-    "merchantId": ""
+    "merchantId": "",
+    "altitude": "1,500m - 1,900m",
+    "variants": []
   },
   {
     "id": "formative-coffee-decaf---popayn-subscription",
@@ -680,7 +736,9 @@
     "retailerId": "formative-coffee",
     "affiliateUrl": "",
     "affiliateNetwork": "",
-    "merchantId": ""
+    "merchantId": "",
+    "altitude": "1,500m - 1,900m",
+    "variants": []
   },
   {
     "id": "rave-coffee-signature-blend-n-1",
@@ -719,7 +777,22 @@
     "retailerId": "rave-coffee",
     "affiliateUrl": "",
     "affiliateNetwork": "",
-    "merchantId": ""
+    "merchantId": "",
+    "altitude": "1,200m - 1,600m",
+    "variants": [
+      {
+        "weight": "250g",
+        "price": 7.75
+      },
+      {
+        "weight": "500g",
+        "price": 14.5
+      },
+      {
+        "weight": "1kg",
+        "price": 26
+      }
+    ]
   },
   {
     "id": "rave-coffee-unordinary-oat-blend-n-26",
@@ -755,7 +828,9 @@
     "retailerId": "rave-coffee",
     "affiliateUrl": "",
     "affiliateNetwork": "",
-    "merchantId": ""
+    "merchantId": "",
+    "altitude": "1,500m - 1,900m",
+    "variants": []
   },
   {
     "id": "rave-coffee-the-italian-job-blend-n-2",
@@ -790,7 +865,9 @@
     "retailerId": "rave-coffee",
     "affiliateUrl": "",
     "affiliateNetwork": "",
-    "merchantId": ""
+    "merchantId": "",
+    "altitude": "1,200m - 1,600m",
+    "variants": []
   },
   {
     "id": "rave-coffee-fudge-blend-n-5",
@@ -824,7 +901,9 @@
     "retailerId": "rave-coffee",
     "affiliateUrl": "",
     "affiliateNetwork": "",
-    "merchantId": ""
+    "merchantId": "",
+    "altitude": "1,200m - 1,600m",
+    "variants": []
   },
   {
     "id": "rave-coffee-chatswood-blend-n-6",
@@ -859,7 +938,9 @@
     "retailerId": "rave-coffee",
     "affiliateUrl": "",
     "affiliateNetwork": "",
-    "merchantId": ""
+    "merchantId": "",
+    "altitude": "1,200m - 1,600m",
+    "variants": []
   },
   {
     "id": "rave-coffee-strong-af-blend-n-666",
@@ -894,7 +975,9 @@
     "retailerId": "rave-coffee",
     "affiliateUrl": "",
     "affiliateNetwork": "",
-    "merchantId": ""
+    "merchantId": "",
+    "altitude": "1,200m - 1,600m",
+    "variants": []
   },
   {
     "id": "rave-coffee-seasonal-organic-coffee-blend-n-7",
@@ -931,7 +1014,9 @@
     "retailerId": "rave-coffee",
     "affiliateUrl": "",
     "affiliateNetwork": "",
-    "merchantId": ""
+    "merchantId": "",
+    "altitude": "1,500m - 1,900m",
+    "variants": []
   },
   {
     "id": "rave-coffee-mocha-java-blend-n-3",
@@ -970,7 +1055,9 @@
     "retailerId": "rave-coffee",
     "affiliateUrl": "",
     "affiliateNetwork": "",
-    "merchantId": ""
+    "merchantId": "",
+    "altitude": "1,200m - 1,600m",
+    "variants": []
   },
   {
     "id": "rave-coffee-espresso-blend-n-4",
@@ -1006,7 +1093,9 @@
     "retailerId": "rave-coffee",
     "affiliateUrl": "",
     "affiliateNetwork": "",
-    "merchantId": ""
+    "merchantId": "",
+    "altitude": "1,200m - 1,600m",
+    "variants": []
   },
   {
     "id": "rave-coffee-signature-blend-decaf-n-1d",
@@ -1045,7 +1134,9 @@
     "retailerId": "rave-coffee",
     "affiliateUrl": "",
     "affiliateNetwork": "",
-    "merchantId": ""
+    "merchantId": "",
+    "altitude": "1,500m - 1,750m",
+    "variants": []
   },
   {
     "id": "rave-coffee-swiss-water-decaf-blend-n-11",
@@ -1084,7 +1175,9 @@
     "retailerId": "rave-coffee",
     "affiliateUrl": "",
     "affiliateNetwork": "",
-    "merchantId": ""
+    "merchantId": "",
+    "altitude": "1,200m - 1,600m",
+    "variants": []
   },
   {
     "id": "rave-coffee-half-caf-blend-n-13",
@@ -1123,7 +1216,9 @@
     "retailerId": "rave-coffee",
     "affiliateUrl": "",
     "affiliateNetwork": "",
-    "merchantId": ""
+    "merchantId": "",
+    "altitude": "1,200m - 1,600m",
+    "variants": []
   },
   {
     "id": "monmouth-coffee-finca-santa-catalina",
@@ -1161,7 +1256,9 @@
     "retailerId": "monmouth-coffee",
     "affiliateUrl": "",
     "affiliateNetwork": "",
-    "merchantId": ""
+    "merchantId": "",
+    "altitude": "1,500m - 1,750m",
+    "variants": []
   },
   {
     "id": "monmouth-coffee-finca-galeras",
@@ -1199,7 +1296,9 @@
     "retailerId": "monmouth-coffee",
     "affiliateUrl": "",
     "affiliateNetwork": "",
-    "merchantId": ""
+    "merchantId": "",
+    "altitude": "1,500m - 1,900m",
+    "variants": []
   },
   {
     "id": "monmouth-coffee-finca-las-nubes-de-antigua",
@@ -1237,7 +1336,9 @@
     "retailerId": "monmouth-coffee",
     "affiliateUrl": "",
     "affiliateNetwork": "",
-    "merchantId": ""
+    "merchantId": "",
+    "altitude": "1,500m - 1,750m",
+    "variants": []
   },
   {
     "id": "monmouth-coffee-decaf-finca-la-bolsa",
@@ -1275,7 +1376,9 @@
     "retailerId": "monmouth-coffee",
     "affiliateUrl": "",
     "affiliateNetwork": "",
-    "merchantId": ""
+    "merchantId": "",
+    "altitude": "1,500m - 1,750m",
+    "variants": []
   },
   {
     "id": "monmouth-coffee-huabal",
@@ -1313,7 +1416,9 @@
     "retailerId": "monmouth-coffee",
     "affiliateUrl": "",
     "affiliateNetwork": "",
-    "merchantId": ""
+    "merchantId": "",
+    "altitude": "1,400m - 1,850m",
+    "variants": []
   },
   {
     "id": "monmouth-coffee-fazenda-ip",
@@ -1351,7 +1456,9 @@
     "retailerId": "monmouth-coffee",
     "affiliateUrl": "",
     "affiliateNetwork": "",
-    "merchantId": ""
+    "merchantId": "",
+    "altitude": "1,100m - 1,350m",
+    "variants": []
   },
   {
     "id": "monmouth-coffee-finca-oro-verde",
@@ -1389,7 +1496,9 @@
     "retailerId": "monmouth-coffee",
     "affiliateUrl": "",
     "affiliateNetwork": "",
-    "merchantId": ""
+    "merchantId": "",
+    "altitude": "1,200m - 1,600m",
+    "variants": []
   },
   {
     "id": "monmouth-coffee-monmouth-espresso",
@@ -1427,7 +1536,22 @@
     "retailerId": "monmouth-coffee",
     "affiliateUrl": "",
     "affiliateNetwork": "",
-    "merchantId": ""
+    "merchantId": "",
+    "altitude": "1,200m - 1,600m",
+    "variants": [
+      {
+        "weight": "250g",
+        "price": 3.7
+      },
+      {
+        "weight": "500g",
+        "price": 7
+      },
+      {
+        "weight": "1kg",
+        "price": 13
+      }
+    ]
   },
   {
     "id": "monmouth-coffee-amaybamba",
@@ -1465,7 +1589,9 @@
     "retailerId": "monmouth-coffee",
     "affiliateUrl": "",
     "affiliateNetwork": "",
-    "merchantId": ""
+    "merchantId": "",
+    "altitude": "1,400m - 1,850m",
+    "variants": []
   },
   {
     "id": "monmouth-coffee-terra-de-so-francisco",
@@ -1503,7 +1629,9 @@
     "retailerId": "monmouth-coffee",
     "affiliateUrl": "",
     "affiliateNetwork": "",
-    "merchantId": ""
+    "merchantId": "",
+    "altitude": "1,100m - 1,350m",
+    "variants": []
   },
   {
     "id": "monmouth-coffee-fazenda-dois-irmos",
@@ -1541,7 +1669,9 @@
     "retailerId": "monmouth-coffee",
     "affiliateUrl": "",
     "affiliateNetwork": "",
-    "merchantId": ""
+    "merchantId": "",
+    "altitude": "1,100m - 1,350m",
+    "variants": []
   },
   {
     "id": "monmouth-coffee-organic-espresso",
@@ -1579,7 +1709,9 @@
     "retailerId": "monmouth-coffee",
     "affiliateUrl": "",
     "affiliateNetwork": "",
-    "merchantId": ""
+    "merchantId": "",
+    "altitude": "1,200m - 1,600m",
+    "variants": []
   },
   {
     "id": "monmouth-coffee-finca-san-pedro",
@@ -1617,7 +1749,9 @@
     "retailerId": "monmouth-coffee",
     "affiliateUrl": "",
     "affiliateNetwork": "",
-    "merchantId": ""
+    "merchantId": "",
+    "altitude": "1,500m - 1,900m",
+    "variants": []
   },
   {
     "id": "monmouth-coffee-tibebu-roba",
@@ -1655,7 +1789,9 @@
     "retailerId": "monmouth-coffee",
     "affiliateUrl": "",
     "affiliateNetwork": "",
-    "merchantId": ""
+    "merchantId": "",
+    "altitude": "1,800m - 2,200m",
+    "variants": []
   },
   {
     "id": "monmouth-coffee-la-bendicin",
@@ -1693,7 +1829,9 @@
     "retailerId": "monmouth-coffee",
     "affiliateUrl": "",
     "affiliateNetwork": "",
-    "merchantId": ""
+    "merchantId": "",
+    "altitude": "1,200m - 1,600m",
+    "variants": []
   },
   {
     "id": "monmouth-coffee-finca-el-cedral",
@@ -1731,6 +1869,8 @@
     "retailerId": "monmouth-coffee",
     "affiliateUrl": "",
     "affiliateNetwork": "",
-    "merchantId": ""
+    "merchantId": "",
+    "altitude": "1,200m - 1,600m",
+    "variants": []
   }
 ]

@@ -6,6 +6,7 @@ import {
   Globe2,
   AlertTriangle,
   Sparkles,
+  Upload,
 } from "lucide-react"
 import { getBeans, getAdminStats } from "@/lib/db/beans"
 import { getRetailers } from "@/lib/db/retailers"
@@ -57,13 +58,23 @@ export default async function AdminCoffeeBeansPage() {
           </p>
         </div>
 
-        <Link
-          href="/admin/coffee-beans/new"
-          className="inline-flex items-center justify-center gap-2 rounded-full bg-primary px-6 py-3 text-xs font-bold text-primary-foreground shadow-sm hover:bg-primary/90 transition-all cursor-pointer w-fit"
-        >
-          <Plus className="size-4" />
-          <span>Add Coffee Bean</span>
-        </Link>
+        <div className="flex items-center gap-2.5 flex-wrap">
+          <Link
+            href="/admin/coffee-beans/import"
+            className="inline-flex items-center justify-center gap-2 rounded-full border border-[#EADFD7] bg-white px-5 py-3 text-xs font-bold text-foreground shadow-2xs hover:bg-[#FAF8F5] transition-all cursor-pointer w-fit"
+          >
+            <Upload className="size-4 text-primary" />
+            <span>Import Beans (Excel / CSV)</span>
+          </Link>
+
+          <Link
+            href="/admin/coffee-beans/new"
+            className="inline-flex items-center justify-center gap-2 rounded-full bg-primary px-6 py-3 text-xs font-bold text-primary-foreground shadow-sm hover:bg-primary/90 transition-all cursor-pointer w-fit"
+          >
+            <Plus className="size-4" />
+            <span>Add Coffee Bean</span>
+          </Link>
+        </div>
       </div>
 
       {/* Quick Summary Metrics Cards */}
